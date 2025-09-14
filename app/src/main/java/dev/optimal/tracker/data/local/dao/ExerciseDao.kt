@@ -14,27 +14,22 @@ import dev.optimal.tracker.data.local.model.workout.ExerciseWithMuscleGroups
 @Dao
 interface ExerciseDao {
 
-    // Get exercise with muscle groups
     @Transaction
     @Query("SELECT * FROM exercise WHERE exerciseId = :exerciseId")
     suspend fun getExerciseWithMuscleGroups(exerciseId: Long): ExerciseWithMuscleGroups?
 
-    // Get all exercises with muscle groups
     @Transaction
     @Query("SELECT * FROM exercise ORDER BY name ASC")
     suspend fun getAllExercisesWithMuscleGroups(): List<ExerciseWithMuscleGroups>
 
-    // Search exercises by name
     @Transaction
     @Query("SELECT * FROM exercise WHERE name LIKE '%' || :searchTerm || '%' ORDER BY name ASC")
     suspend fun searchExercisesByName(searchTerm: String): List<ExerciseWithMuscleGroups>
 
-    // Get exercises by type
     @Transaction
     @Query("SELECT * FROM exercise WHERE type = :exerciseType ORDER BY name ASC")
     suspend fun getExercisesByType(exerciseType: ExerciseType): List<ExerciseWithMuscleGroups>
 
-    // Basic CRUD operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExercise(exercise: Exercise): Long
 

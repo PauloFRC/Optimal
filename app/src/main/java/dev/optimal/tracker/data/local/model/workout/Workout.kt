@@ -22,7 +22,7 @@ data class WorkoutSession(
     val name: String,
     val completed: Boolean,
     val startDate: Date,
-    val endDate: Date
+    val endDate: Date?
 )
 
 data class WorkoutModelWithExercises(

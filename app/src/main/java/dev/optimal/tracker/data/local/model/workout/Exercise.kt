@@ -133,7 +133,6 @@ data class SessionExerciseWithSets (
     ],
     indices = [Index("exerciseId"), Index("muscleGroupId")]
 )
-
 data class ExerciseMuscleGroupCrossRef(
     val exerciseId: Long,
     val muscleGroupId: Long,

@@ -78,7 +78,7 @@ object FakeWorkoutFactory {
         name: String = "Push Day",
         completed: Boolean = true,
         startDate: Date = Date(),
-        endDate: Date = Date()
+        endDate: Date? = null
     ) = WorkoutSession(
         workoutSessionId = workoutSessionId,
         workoutModelId = workoutModelId,

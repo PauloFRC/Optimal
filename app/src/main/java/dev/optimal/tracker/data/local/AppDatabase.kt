@@ -33,7 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao
 
-    abstract fun workoutDao(): WorkoutModelDao
+    abstract fun workoutModelDao(): WorkoutModelDao
 
     abstract fun workoutSessionDao(): WorkoutSessionDao
 }

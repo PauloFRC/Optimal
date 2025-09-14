@@ -104,32 +104,31 @@ interface WorkoutModelDao {
 @Dao
 interface WorkoutSessionDao {
 
-    // Get single workout session with exercises and sets
     @Transaction
     @Query("SELECT * FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
     suspend fun getWorkoutSessionWithExercises(workoutSessionId: Long): WorkoutSessionWithExercises?
 
-    // Get all workout sessions with exercises and sets
     @Transaction
     @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC")
     suspend fun getAllWorkoutSessionsWithExercises(): List<WorkoutSessionWithExercises>
 
-    // Get workout sessions by workout model ID
     @Transaction
     @Query("SELECT * FROM WorkoutSession WHERE workoutModelId = :workoutModelId ORDER BY startDate DESC")
     suspend fun getWorkoutSessionsByModelId(workoutModelId: Long): List<WorkoutSessionWithExercises>
 
-    // Get workout sessions within date range
     @Transaction
     @Query("SELECT * FROM WorkoutSession WHERE startDate BETWEEN :startDate AND :endDate ORDER BY startDate DESC")
     suspend fun getWorkoutSessionsByDateRange(startDate: Long, endDate: Long): List<WorkoutSessionWithExercises>
 
-    // Get recent workout sessions (last N sessions)
+    @Transaction
+    suspend fun getWorkoutSessionsByDateRange(startDate: Date, endDate: Date): List<WorkoutSessionWithExercises> {
+        return getWorkoutSessionsByDateRange(startDate.time, endDate.time)
+    }
+
     @Transaction
     @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC LIMIT :limit")
     suspend fun getRecentWorkoutSessions(limit: Long): List<WorkoutSessionWithExercises>
 
-    // Get workout sessions by name pattern
     @Transaction
     @Query("SELECT * FROM WorkoutSession WHERE name LIKE '%' || :searchTerm || '%' ORDER BY startDate DESC")
     suspend fun searchWorkoutSessionsByName(searchTerm: String): List<WorkoutSessionWithExercises>
@@ -147,14 +146,12 @@ interface WorkoutSessionDao {
     @Query("DELETE FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
     suspend fun deleteWorkoutSessionById(workoutSessionId: Long)
 
-    // Get just the workout sessions without exercises (for lists)
     @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC")
     suspend fun getAllWorkoutSessions(): List<WorkoutSession>
 
     @Query("SELECT * FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
     suspend fun getWorkoutSessionById(workoutSessionId: Long): WorkoutSession?
 
-    // Transaction method to insert complete workout session with exercises and sets
     @Transaction
     suspend fun insertCompleteWorkoutSession(
         workoutSession: WorkoutSession,
@@ -202,7 +199,6 @@ interface WorkoutSessionDao {
     @Delete
     suspend fun deleteSessionSet(sessionSet: SessionSet)
 
-    // Update session set performance data
     @Query("""
         UPDATE SessionSet 
         SET reps = :reps, weight = :weight, rir = :rir 
@@ -215,7 +211,6 @@ interface WorkoutSessionDao {
         rir: Int?
     )
 
-    // Mark session set as completed
     @Query("UPDATE SessionSet SET completed = 1 WHERE sessionSetId = :sessionSetId")
     suspend fun markSessionSetCompleted(sessionSetId: Long)
 }
