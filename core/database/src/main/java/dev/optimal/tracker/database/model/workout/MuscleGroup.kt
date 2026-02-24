@@ -1,7 +1,6 @@
-package dev.optimal.tracker.data.local.model.workout
+package dev.optimal.tracker.database.model.workout
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "muscle_group")

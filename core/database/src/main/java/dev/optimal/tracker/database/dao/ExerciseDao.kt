@@ -1,4 +1,4 @@
-package dev.optimal.tracker.data.local.dao
+package dev.optimal.tracker.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,13 +7,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import dev.optimal.tracker.data.local.model.workout.Exercise
-import dev.optimal.tracker.data.local.model.workout.ExerciseType
-import dev.optimal.tracker.data.local.model.workout.ExerciseWithMuscleGroups
+import dev.optimal.tracker.database.model.workout.Exercise
+import dev.optimal.tracker.database.model.workout.ExerciseType
+import dev.optimal.tracker.database.model.workout.ExerciseWithMuscleGroups
 
 @Dao
 interface ExerciseDao {
-
     @Transaction
     @Query("SELECT * FROM exercise WHERE exerciseId = :exerciseId")
     suspend fun getExerciseWithMuscleGroups(exerciseId: Long): ExerciseWithMuscleGroups?

@@ -1,9 +1,14 @@
-package dev.optimal.tracker.data.local.model.workout
+package dev.optimal.tracker.database.model.workout
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
+enum class SetType {
+    WARMUP,
+    WORKING
+}
 @Entity(
     foreignKeys = [
         ForeignKey(
@@ -12,7 +17,8 @@ import androidx.room.PrimaryKey
             childColumns = ["modelExerciseId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index("modelExerciseId")]
 )
 data class ModelSet (
     @PrimaryKey(autoGenerate = true) val modelSetId: Long = 0,
@@ -29,7 +35,8 @@ data class ModelSet (
             childColumns = ["sessionExerciseId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index("sessionExerciseId")]
 )
 data class SessionSet (
     @PrimaryKey(autoGenerate = true) val sessionSetId: Long = 0,
@@ -41,8 +48,3 @@ data class SessionSet (
     val weight: Double? = null,
     val rir: Int? = null
 )
-
-enum class SetType {
-    WARMUP,
-    WORKING
-}

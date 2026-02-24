@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Optimal"
 include(":app")
- 
+include(":core:database")
