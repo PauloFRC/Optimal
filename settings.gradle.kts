@@ -32,3 +32,5 @@ dependencyResolutionManagement {
 rootProject.name = "optimal"
 include(":app")
 include(":core:database")
+include(":core:designsystem")
+include(":core:model")
