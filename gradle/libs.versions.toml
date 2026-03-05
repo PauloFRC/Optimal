@@ -33,6 +33,7 @@ uiTestJunit4 = "1.10.3"
 google-truth = "1.4.5"
 kotlin-test = "2.3.10"
 androidx-tracing = "1.3.0"
+floorplan = "0.0.4"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -136,6 +137,7 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+floorplan = { id = "com.juliozynger.floorplan", version.ref = "floorplan" }
 
 # project plugins
 optimal-android-application = { id = "optimal.android.application" }

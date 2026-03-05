@@ -11,86 +11,78 @@ import dev.optimal.tracker.database.model.workout.ModelExercise
 import dev.optimal.tracker.database.model.workout.ModelSet
 import dev.optimal.tracker.database.model.workout.WorkoutModel
 import dev.optimal.tracker.database.model.workout.WorkoutModelWithExercises
+import dev.optimal.tracker.database.model.workout.input.ModelExerciseInput
+import dev.optimal.tracker.database.model.workout.input.WorkoutModelInput
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkoutModelDao {
 
-    // Get single workout model with exercises and sets
     @Transaction
     @Query("SELECT * FROM WorkoutModel WHERE workoutModelId = :workoutModelId")
-    suspend fun getWorkoutModelWithExercises(workoutModelId: Long): WorkoutModelWithExercises?
+    fun getWorkoutModelWithExercises(workoutModelId: Long): Flow<WorkoutModelWithExercises?>
 
-    // Get all workout models with exercises and sets
     @Transaction
     @Query("SELECT * FROM WorkoutModel ORDER BY name ASC")
-    suspend fun getAllWorkoutModelsWithExercises(): List<WorkoutModelWithExercises>
+    fun getAllWorkoutModelsWithExercises(): Flow<List<WorkoutModelWithExercises>>
 
-    // Get workout models by name pattern
     @Transaction
     @Query("SELECT * FROM WorkoutModel WHERE name LIKE '%' || :searchTerm || '%' ORDER BY name ASC")
-    suspend fun searchWorkoutModelsByName(searchTerm: String): List<WorkoutModelWithExercises>
+    fun searchWorkoutModelsByName(searchTerm: String): Flow<List<WorkoutModelWithExercises>>
 
-    // Basic CRUD operations
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertWorkoutModel(workoutModel: WorkoutModel): Long
 
     @Update
     suspend fun updateWorkoutModel(workoutModel: WorkoutModel)
 
-    @Delete
-    suspend fun deleteWorkoutModel(workoutModel: WorkoutModel)
-
     @Query("DELETE FROM WorkoutModel WHERE workoutModelId = :workoutModelId")
     suspend fun deleteWorkoutModelById(workoutModelId: Long)
 
-    // Get just the workout models without exercises (for lists)
-    @Query("SELECT * FROM WorkoutModel ORDER BY name ASC")
-    suspend fun getAllWorkoutModels(): List<WorkoutModel>
+    @Query("DELETE FROM ModelExercise WHERE workoutModelId = :workoutModelId")
+    suspend fun deleteModelExercisesByWorkoutId(workoutModelId: Long)
 
-    @Query("SELECT * FROM WorkoutModel WHERE workoutModelId = :workoutModelId")
-    suspend fun getWorkoutModelById(workoutModelId: Long): WorkoutModel?
-
-    @Query("SELECT * FROM ModelSet")
-    suspend fun getAllModelSetsForDebugging(): List<ModelSet>
-
-    // Transaction method to insert complete workout model with exercises and sets
     @Transaction
-    suspend fun insertCompleteWorkoutModel(
-        workoutModel: WorkoutModel,
-        modelExercises: List<ModelExercise>,
-        modelSets: List<ModelSet>
-    ): Long {
-        val workoutModelId = insertWorkoutModel(workoutModel)
-
-        val insertedModelExercises = mutableListOf<ModelExercise>()
-        modelExercises.forEach { modelExercise ->
-            val modelExerciseId = insertModelExercise(
-                modelExercise.copy(workoutModelId = workoutModelId)
-            )
-            insertedModelExercises.add(modelExercise.copy(
-                modelExerciseId = modelExerciseId,
-                workoutModelId = workoutModelId
-            ))
-        }
-
-        // Insert model sets with the correct model exercise IDs
-        modelSets.forEach { modelSet ->
-            val correspondingModelExercise = insertedModelExercises.find {
-                it.order == modelExercises.find { me ->
-                    modelSet.modelExerciseId == me.modelExerciseId
-                }?.order
-            }
-            correspondingModelExercise?.let { modelExercise ->
-                insertModelSet(modelSet.copy(modelExerciseId = modelExercise.modelExerciseId))
-            }
-        }
-
+    suspend fun insertCompleteWorkoutModel(input: WorkoutModelInput): Long {
+        val workoutModelId = insertWorkoutModel(WorkoutModel(name = input.name))
+        insertExercisesWithSets(workoutModelId, input.exercises)
         return workoutModelId
     }
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Transaction
+    suspend fun updateCompleteWorkoutModel(workoutModelId: Long, input: WorkoutModelInput) {
+        updateWorkoutModel(WorkoutModel(workoutModelId = workoutModelId, name = input.name))
+        deleteModelExercisesByWorkoutId(workoutModelId)
+        insertExercisesWithSets(workoutModelId, input.exercises)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertModelExercise(modelExercise: ModelExercise): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertModelSet(modelSet: ModelSet): Long
+
+    private suspend fun insertExercisesWithSets(
+        workoutModelId: Long,
+        exercises: List<ModelExerciseInput>
+    ) {
+        exercises.forEach { exerciseInput ->
+            val modelExerciseId = insertModelExercise(
+                ModelExercise(
+                    workoutModelId = workoutModelId,
+                    exerciseId = exerciseInput.exerciseId,
+                    order = exerciseInput.order
+                )
+            )
+            exerciseInput.sets.forEach { setInput ->
+                insertModelSet(
+                    ModelSet(
+                        modelExerciseId = modelExerciseId,
+                        order = setInput.order,
+                        type = setInput.type
+                    )
+                )
+            }
+        }
+    }
 }

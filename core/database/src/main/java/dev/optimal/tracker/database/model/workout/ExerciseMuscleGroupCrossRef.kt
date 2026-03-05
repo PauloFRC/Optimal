@@ -4,12 +4,19 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.Junction
-import androidx.room.Relation
+import androidx.room.TypeConverter
 
 enum class MuscleGroupRole {
     PRIMARY,
     SECONDARY
+}
+
+class Converters {
+    @TypeConverter
+    fun fromRole(role: MuscleGroupRole): String = role.name
+
+    @TypeConverter
+    fun toRole(value: String): MuscleGroupRole = MuscleGroupRole.valueOf(value)
 }
 
 @Entity(
@@ -36,17 +43,7 @@ data class ExerciseMuscleGroupCrossRef(
     val role: MuscleGroupRole
 )
 
-data class ExerciseWithMuscleGroups(
-    @Embedded val exercise: Exercise,
-    @Relation(
-        parentColumn = "exerciseId",
-        entity = MuscleGroup::class,
-        entityColumn = "muscleGroupId",
-        associateBy = Junction(
-            value = ExerciseMuscleGroupCrossRef::class,
-            parentColumn = "exerciseId",
-            entityColumn = "muscleGroupId"
-        )
-    )
-    val muscleGroups: List<MuscleGroup>
+data class MuscleGroupWithRole(
+    @Embedded val muscleGroup: MuscleGroup,
+    val role: MuscleGroupRole
 )

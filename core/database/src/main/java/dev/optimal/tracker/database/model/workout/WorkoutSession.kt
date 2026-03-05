@@ -5,16 +5,16 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import java.util.Date
+import java.time.LocalDateTime
 
 @Entity(indices = [Index("workoutModelId")])
 data class WorkoutSession(
     @PrimaryKey(autoGenerate = true) val workoutSessionId: Long = 0,
     val workoutModelId: Long?,
     val name: String,
-    val completed: Boolean?,
-    val startDate: Date,
-    val endDate: Date?
+    val completed: Boolean = false,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime?
 )
 
 data class WorkoutSessionWithExercises(
