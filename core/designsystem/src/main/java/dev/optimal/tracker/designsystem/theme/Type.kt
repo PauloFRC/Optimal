@@ -6,9 +6,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-//TODO: add fonts
-val BarlowCondensed = FontFamily()
-val Inter = FontFamily()
+// Using Default FontFamily until actual font resources are added
+val BarlowCondensed = FontFamily.Default
+val Inter = FontFamily.Default
 
 val Typography = Typography(
 

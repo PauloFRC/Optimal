@@ -3,7 +3,7 @@
 
     <style name="Theme.Optimal" parent="android:Theme.Material.Light.NoActionBar" />
     <style name="Theme.Optimal.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

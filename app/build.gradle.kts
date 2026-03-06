@@ -11,7 +11,7 @@ plugins {
 // TODO: Secure Keystore Loading
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "dev.optimal.tracker"
 
     defaultConfig {
@@ -45,9 +45,16 @@ android {
 dependencies {
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.tracing.ktx)
+    implementation(libs.coil.kt)
 
     ksp(libs.hilt.compiler)
 
@@ -59,6 +66,9 @@ dependencies {
 
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.kotlin.test)
+
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
 
 }
 

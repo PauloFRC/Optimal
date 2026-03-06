@@ -12,7 +12,6 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
         with(target) {
             apply(plugin = "androidx.room")
             apply(plugin = "com.google.devtools.ksp")
-            apply(libs.findPlugin("floorplan").get().get().pluginId)
 
             extensions.configure<KspExtension> {
                 arg("room.generateKotlin", "true")
