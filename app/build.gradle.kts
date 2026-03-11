@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.tracing.ktx)
     implementation(libs.coil.kt)
+    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.navigation.compose)
 
     ksp(libs.hilt.compiler)
 
