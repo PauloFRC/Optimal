@@ -45,7 +45,7 @@ interface WorkoutSessionDao {
     @Query("SELECT * FROM WorkoutSessionEntity WHERE name LIKE '%' || :searchTerm || '%' ORDER BY startDate DESC")
     suspend fun searchWorkoutSessionsByName(searchTerm: String): List<WorkoutSessionWithExercises>
 
-    // Basic CRUD operations
+    // CRUD operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkoutSession(workoutSessionEntity: WorkoutSessionEntity): Long
 
@@ -72,7 +72,7 @@ interface WorkoutSessionDao {
     ): Long {
         val workoutSessionId = insertWorkoutSession(workoutSessionEntity)
 
-        // Insert session exercises with the generated workout session ID
+        // insert session exercises with the generated workout session ID
         val insertedSessionExerciseEntities = mutableListOf<SessionExerciseEntity>()
         sessionExerciseEntities.forEach { sessionExercise ->
             val sessionExerciseId = insertSessionExercise(
@@ -84,7 +84,7 @@ interface WorkoutSessionDao {
             ))
         }
 
-        // Insert session sets with the correct session exercise IDs
+        // insert session sets with the correct session exercise IDs
         sessionSetEntities.forEach { sessionSet ->
             val correspondingSessionExercise = insertedSessionExerciseEntities.find {
                 it.order == sessionExerciseEntities.find { se ->

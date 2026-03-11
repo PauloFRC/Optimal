@@ -16,11 +16,11 @@ import androidx.room.Index
         ForeignKey(
             entity = MuscleGroupEntity::class,
             parentColumns = ["muscleGroupId"],
-            childColumns = ["muscleGroupId"],
+            childColumns = ["secondaryMuscleGroupId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("exerciseId"), Index("muscleGroupId")]
+    indices = [Index("exerciseId"), Index("secondaryMuscleGroupId")]
 )
 data class ExerciseSecondaryMuscleGroupCrossRef(
     val exerciseId: Long,

@@ -9,7 +9,6 @@ import androidx.room.Relation
 import java.time.LocalDateTime
 
 @Entity(
-    tableName = "workout_session",
     foreignKeys = [
         ForeignKey(
             entity = WorkoutModelEntity::class,

@@ -4,13 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-
-enum class ExerciseType {
-    REPS_WEIGHT,
-    REPS,
-    ISOMETRIC,
-    ISOMETRIC_WEIGHTS
-}
+import dev.optimal.tracker.database.enums.ExerciseType
 
 @Entity(
     tableName = "exercise",
@@ -27,7 +21,7 @@ enum class ExerciseType {
 data class ExerciseEntity(
     @PrimaryKey(autoGenerate = true) val exerciseId: Long = 0,
     val name: String,
-    val primaryMuscleGroupId: Long,
+    val primaryMuscleGroupId: Long?,
     val description: String = "",
     val unilateral: Boolean = false,
     val type: ExerciseType = ExerciseType.REPS_WEIGHT
