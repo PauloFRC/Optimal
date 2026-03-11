@@ -7,9 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import dev.optimal.tracker.database.model.workout.SessionExercise
-import dev.optimal.tracker.database.model.workout.SessionSet
-import dev.optimal.tracker.database.model.workout.WorkoutSession
+import dev.optimal.tracker.database.model.workout.SessionExerciseEntity
+import dev.optimal.tracker.database.model.workout.SessionSetEntity
+import dev.optimal.tracker.database.model.workout.WorkoutSessionEntity
 import dev.optimal.tracker.database.model.workout.WorkoutSessionWithExercises
 import java.util.Date
 
@@ -17,19 +17,19 @@ import java.util.Date
 interface WorkoutSessionDao {
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutSessionId = :workoutSessionId")
     suspend fun getWorkoutSessionWithExercises(workoutSessionId: Long): WorkoutSessionWithExercises?
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC")
+    @Query("SELECT * FROM WorkoutSessionEntity ORDER BY startDate DESC")
     suspend fun getAllWorkoutSessionsWithExercises(): List<WorkoutSessionWithExercises>
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession WHERE workoutModelId = :workoutModelId ORDER BY startDate DESC")
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutModelId = :workoutModelId ORDER BY startDate DESC")
     suspend fun getWorkoutSessionsByModelId(workoutModelId: Long): List<WorkoutSessionWithExercises>
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession WHERE startDate BETWEEN :startDate AND :endDate ORDER BY startDate DESC")
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE startDate BETWEEN :startDate AND :endDate ORDER BY startDate DESC")
     suspend fun getWorkoutSessionsByDateRange(startDate: Long, endDate: Long): List<WorkoutSessionWithExercises>
 
     @Transaction
@@ -38,56 +38,56 @@ interface WorkoutSessionDao {
     }
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC LIMIT :limit")
+    @Query("SELECT * FROM WorkoutSessionEntity ORDER BY startDate DESC LIMIT :limit")
     suspend fun getRecentWorkoutSessions(limit: Long): List<WorkoutSessionWithExercises>
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSession WHERE name LIKE '%' || :searchTerm || '%' ORDER BY startDate DESC")
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE name LIKE '%' || :searchTerm || '%' ORDER BY startDate DESC")
     suspend fun searchWorkoutSessionsByName(searchTerm: String): List<WorkoutSessionWithExercises>
 
     // Basic CRUD operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWorkoutSession(workoutSession: WorkoutSession): Long
+    suspend fun insertWorkoutSession(workoutSessionEntity: WorkoutSessionEntity): Long
 
     @Update
-    suspend fun updateWorkoutSession(workoutSession: WorkoutSession)
+    suspend fun updateWorkoutSession(workoutSessionEntity: WorkoutSessionEntity)
 
     @Delete
-    suspend fun deleteWorkoutSession(workoutSession: WorkoutSession)
+    suspend fun deleteWorkoutSession(workoutSessionEntity: WorkoutSessionEntity)
 
-    @Query("DELETE FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
+    @Query("DELETE FROM WorkoutSessionEntity WHERE workoutSessionId = :workoutSessionId")
     suspend fun deleteWorkoutSessionById(workoutSessionId: Long)
 
-    @Query("SELECT * FROM WorkoutSession ORDER BY startDate DESC")
-    suspend fun getAllWorkoutSessions(): List<WorkoutSession>
+    @Query("SELECT * FROM WorkoutSessionEntity ORDER BY startDate DESC")
+    suspend fun getAllWorkoutSessions(): List<WorkoutSessionEntity>
 
-    @Query("SELECT * FROM WorkoutSession WHERE workoutSessionId = :workoutSessionId")
-    suspend fun getWorkoutSessionById(workoutSessionId: Long): WorkoutSession?
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutSessionId = :workoutSessionId")
+    suspend fun getWorkoutSessionById(workoutSessionId: Long): WorkoutSessionEntity?
 
     @Transaction
     suspend fun insertCompleteWorkoutSession(
-        workoutSession: WorkoutSession,
-        sessionExercises: List<SessionExercise>,
-        sessionSets: List<SessionSet>
+        workoutSessionEntity: WorkoutSessionEntity,
+        sessionExerciseEntities: List<SessionExerciseEntity>,
+        sessionSetEntities: List<SessionSetEntity>
     ): Long {
-        val workoutSessionId = insertWorkoutSession(workoutSession)
+        val workoutSessionId = insertWorkoutSession(workoutSessionEntity)
 
         // Insert session exercises with the generated workout session ID
-        val insertedSessionExercises = mutableListOf<SessionExercise>()
-        sessionExercises.forEach { sessionExercise ->
+        val insertedSessionExerciseEntities = mutableListOf<SessionExerciseEntity>()
+        sessionExerciseEntities.forEach { sessionExercise ->
             val sessionExerciseId = insertSessionExercise(
                 sessionExercise.copy(workoutSessionId = workoutSessionId)
             )
-            insertedSessionExercises.add(sessionExercise.copy(
+            insertedSessionExerciseEntities.add(sessionExercise.copy(
                 sessionExerciseId = sessionExerciseId,
                 workoutSessionId = workoutSessionId
             ))
         }
 
         // Insert session sets with the correct session exercise IDs
-        sessionSets.forEach { sessionSet ->
-            val correspondingSessionExercise = insertedSessionExercises.find {
-                it.order == sessionExercises.find { se ->
+        sessionSetEntities.forEach { sessionSet ->
+            val correspondingSessionExercise = insertedSessionExerciseEntities.find {
+                it.order == sessionExerciseEntities.find { se ->
                     sessionSet.sessionExerciseId == se.sessionExerciseId
                 }?.order
             }
@@ -100,22 +100,24 @@ interface WorkoutSessionDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSessionExercise(sessionExercise: SessionExercise): Long
+    suspend fun insertSessionExercise(sessionExerciseEntity: SessionExerciseEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSessionSet(sessionSet: SessionSet): Long
+    suspend fun insertSessionSet(sessionSetEntity: SessionSetEntity): Long
 
     @Update
-    suspend fun updateSessionSet(sessionSet: SessionSet)
+    suspend fun updateSessionSet(sessionSetEntity: SessionSetEntity)
 
     @Delete
-    suspend fun deleteSessionSet(sessionSet: SessionSet)
+    suspend fun deleteSessionSet(sessionSetEntity: SessionSetEntity)
 
-    @Query("""
-        UPDATE SessionSet 
+    @Query(
+        """
+        UPDATE SessionSetEntity 
         SET reps = :reps, weight = :weight, rir = :rir 
         WHERE sessionSetId = :sessionSetId
-    """)
+    """
+    )
     suspend fun updateSessionSetPerformance(
         sessionSetId: Long,
         reps: Int?,
@@ -123,6 +125,6 @@ interface WorkoutSessionDao {
         rir: Int?
     )
 
-    @Query("UPDATE SessionSet SET completed = 1 WHERE sessionSetId = :sessionSetId")
+    @Query("UPDATE SessionSetEntity SET completed = 1 WHERE sessionSetId = :sessionSetId")
     suspend fun markSessionSetCompleted(sessionSetId: Long)
 }

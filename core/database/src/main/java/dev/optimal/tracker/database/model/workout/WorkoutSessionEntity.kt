@@ -2,13 +2,25 @@ package dev.optimal.tracker.database.model.workout
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import java.time.LocalDateTime
 
-@Entity(indices = [Index("workoutModelId")])
-data class WorkoutSession(
+@Entity(
+    tableName = "workout_session",
+    foreignKeys = [
+        ForeignKey(
+            entity = WorkoutModelEntity::class,
+            parentColumns = ["workoutModelId"],
+            childColumns = ["workoutModelId"],
+            onDelete = ForeignKey.SET_NULL
+        )
+    ],
+    indices = [Index("workoutModelId")]
+)
+data class WorkoutSessionEntity(
     @PrimaryKey(autoGenerate = true) val workoutSessionId: Long = 0,
     val workoutModelId: Long?,
     val name: String,
@@ -18,9 +30,9 @@ data class WorkoutSession(
 )
 
 data class WorkoutSessionWithExercises(
-    @Embedded val workoutSession: WorkoutSession,
+    @Embedded val workoutSessionEntity: WorkoutSessionEntity,
     @Relation(
-        entity = SessionExercise::class,
+        entity = SessionExerciseEntity::class,
         parentColumn = "workoutSessionId",
         entityColumn = "workoutSessionId"
     )

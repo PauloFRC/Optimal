@@ -10,13 +10,13 @@ import androidx.room.Relation
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = WorkoutModel::class,
+            entity = WorkoutModelEntity::class,
             parentColumns = ["workoutModelId"],
             childColumns = ["workoutModelId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Exercise::class,
+            entity = ExerciseEntity::class,
             parentColumns = ["exerciseId"],
             childColumns = ["exerciseId"],
             onDelete = ForeignKey.CASCADE
@@ -24,7 +24,7 @@ import androidx.room.Relation
     ],
     indices = [Index("workoutModelId"), Index("exerciseId")]
 )
-data class ModelExercise(
+data class ModelExerciseEntity(
     @PrimaryKey(autoGenerate = true) val modelExerciseId: Long = 0,
     val workoutModelId: Long,
     val exerciseId: Long,
@@ -32,16 +32,16 @@ data class ModelExercise(
 )
 
 data class ModelExerciseWithSets (
-    @Embedded val modelExercise: ModelExercise,
+    @Embedded val modelExerciseEntity: ModelExerciseEntity,
     @Relation(
         parentColumn = "exerciseId",
         entityColumn = "exerciseId"
     )
-    val exercise: Exercise,
+    val exerciseEntity: ExerciseEntity,
     @Relation(
-        entity = ModelSet::class,
+        entity = ModelSetEntity::class,
         parentColumn = "modelExerciseId",
         entityColumn = "modelExerciseId"
     )
-    val modelSets: List<ModelSet>
+    val modelSetEntities: List<ModelSetEntity>
 )

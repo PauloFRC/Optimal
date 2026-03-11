@@ -6,15 +6,15 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity
-data class WorkoutModel(
+data class WorkoutModelEntity(
     @PrimaryKey(autoGenerate = true) val workoutModelId: Long = 0,
     val name: String,
 )
 
 data class WorkoutModelWithExercises(
-    @Embedded val workoutModel: WorkoutModel,
+    @Embedded val workoutModelEntity: WorkoutModelEntity,
     @Relation(
-        entity = ModelExercise::class,
+        entity = ModelExerciseEntity::class,
         parentColumn = "workoutModelId",
         entityColumn = "workoutModelId",
     )
