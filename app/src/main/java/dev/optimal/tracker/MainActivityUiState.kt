@@ -1,5 +1,7 @@
 package dev.optimal.tracker
 
+import dev.optimal.tracker.model.workout.WorkoutSessionModel
+
 data class MainActivityUiState(
-    val test: Boolean = false,
+    val sessionHistory: List<WorkoutSessionModel> = listOf()
 )

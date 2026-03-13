@@ -31,7 +31,7 @@ fun OptimalTheme(
 ) {
     MaterialTheme(
         colorScheme = OptimalDarkColorScheme,
-        typography  = OptimalTypography,   // wire up your Type.kt here
+        typography  = OptimalTypography,
         content     = content,
     )
 }

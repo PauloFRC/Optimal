@@ -11,6 +11,7 @@ import dev.optimal.tracker.database.model.workout.SessionExerciseEntity
 import dev.optimal.tracker.database.model.workout.SessionSetEntity
 import dev.optimal.tracker.database.model.workout.WorkoutSessionEntity
 import dev.optimal.tracker.database.model.workout.WorkoutSessionWithExercises
+import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 @Dao
@@ -22,7 +23,7 @@ interface WorkoutSessionDao {
 
     @Transaction
     @Query("SELECT * FROM WorkoutSessionEntity ORDER BY startDate DESC")
-    suspend fun getAllWorkoutSessionsWithExercises(): List<WorkoutSessionWithExercises>
+    fun getAllWorkoutSessionsWithExercises(): Flow<List<WorkoutSessionWithExercises>>
 
     @Transaction
     @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutModelId = :workoutModelId ORDER BY startDate DESC")
@@ -57,9 +58,6 @@ interface WorkoutSessionDao {
 
     @Query("DELETE FROM WorkoutSessionEntity WHERE workoutSessionId = :workoutSessionId")
     suspend fun deleteWorkoutSessionById(workoutSessionId: Long)
-
-    @Query("SELECT * FROM WorkoutSessionEntity ORDER BY startDate DESC")
-    suspend fun getAllWorkoutSessions(): List<WorkoutSessionEntity>
 
     @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutSessionId = :workoutSessionId")
     suspend fun getWorkoutSessionById(workoutSessionId: Long): WorkoutSessionEntity?

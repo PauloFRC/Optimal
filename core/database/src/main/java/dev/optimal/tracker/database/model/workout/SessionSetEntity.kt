@@ -25,6 +25,5 @@ data class SessionSetEntity (
     val completed: Boolean = false,
     val reps: Int? = null,
     val weight: Double? = null,
-    val durationSeconds: Int? = null,
     val rir: Int? = null
 )

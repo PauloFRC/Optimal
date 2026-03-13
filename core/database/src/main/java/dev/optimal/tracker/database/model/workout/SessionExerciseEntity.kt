@@ -35,16 +35,16 @@ data class SessionExerciseEntity(
 )
 
 data class SessionExerciseWithSets (
-    @Embedded val sessionExerciseEntity: SessionExerciseEntity,
+    @Embedded val sessionExercise: SessionExerciseEntity,
     @Relation(
         parentColumn = "exerciseId",
         entityColumn = "exerciseId"
     )
-    val exerciseEntity: ExerciseEntity,
+    val exercise: ExerciseEntity,
     @Relation(
         entity = SessionSetEntity::class,
         parentColumn = "sessionExerciseId",
         entityColumn = "sessionExerciseId"
     )
-    val sessionSetEntities: List<SessionSetEntity>
+    val sessionSets: List<SessionSetEntity>
 )

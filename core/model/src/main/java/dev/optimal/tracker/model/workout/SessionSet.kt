@@ -1,10 +1,9 @@
 package dev.optimal.tracker.model.workout
 
-import dev.optimal.tracker.database.model.workout.SetType
+import dev.optimal.tracker.database.enums.SetType
 
 data class SessionSetModel(
     val id: Long,
-    val exerciseId: Long,
     val order: Int,
     val type: SetType,
     val isCompleted: Boolean,

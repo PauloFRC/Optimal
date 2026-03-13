@@ -29,11 +29,11 @@ data class WorkoutSessionEntity(
 )
 
 data class WorkoutSessionWithExercises(
-    @Embedded val workoutSessionEntity: WorkoutSessionEntity,
+    @Embedded val workoutSession: WorkoutSessionEntity,
     @Relation(
         entity = SessionExerciseEntity::class,
         parentColumn = "workoutSessionId",
         entityColumn = "workoutSessionId"
     )
-    val sessionExercisesWithSets: List<SessionExerciseWithSets>
+    val exercises: List<SessionExerciseWithSets>
 )
