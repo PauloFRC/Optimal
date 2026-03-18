@@ -37,6 +37,8 @@ coil = "2.7.0"
 androidxTestCore = "1.7.0-rc01"
 kotlinxCoroutines = "1.10.1"
 androidxTestRunner = "1.7.0-rc01"
+appcompat = "1.7.1"
+material3 = "1.4.0"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -125,6 +127,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 google-truth = { module = "com.google.truth:truth", version.ref = "google-truth" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 # android

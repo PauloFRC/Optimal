@@ -18,47 +18,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import dev.optimal.tracker.MainActivityAction
-import dev.optimal.tracker.MainActivityUiState
-import dev.optimal.tracker.navigation.HOME
-import dev.optimal.tracker.navigation.PROFILE
-import dev.optimal.tracker.navigation.WORKOUT
+import dev.optimal.tracker.navigation.AppNavHost
+import dev.optimal.tracker.navigation.topLevelDestinations
 
-//TODO: improve
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OptimalApp(
-    state: MainActivityUiState,
-    onAction: (MainActivityAction) -> Unit,
-) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val topLevelRoutes = listOf(
-        HOME to "home_route",
-        WORKOUT to "workout_route",
-        PROFILE to "profile_route"
-    )
-
-    val currentTopLevelItem = topLevelRoutes.find { it.second == currentRoute }?.first
-    val isTopLevelDestination = currentTopLevelItem != null
+fun OptimalApp() {
+    val appState = rememberOptimalAppState()
+    val currentTopLevel = appState.currentTopLevel
+    val isTopLevel = appState.isTopLevelDestination
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            if (isTopLevelDestination) {
+            if (isTopLevel && currentTopLevel != null) {
                 TopAppBar(
-                    title = { Text(stringResource(currentTopLevelItem.titleTextId)) },
+                    title = { Text(stringResource(currentTopLevel.titleTextId)) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         titleContentColor = MaterialTheme.colorScheme.onBackground
@@ -68,41 +46,32 @@ fun OptimalApp(
             }
         },
         bottomBar = {
-            if (isTopLevelDestination) {
+            if (isTopLevel) {
                 NavigationBar(
                     windowInsets = WindowInsets.safeDrawing.only(
                         WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
                     )
                 ) {
-                    topLevelRoutes.forEach { (item, route) ->
-                        val selected = currentRoute == route
+                    topLevelDestinations.forEach { screen ->
+                        val selected = currentTopLevel?.route == screen.route
                         NavigationBarItem(
                             selected = selected,
-                            onClick = {
-                                navController.navigate(route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
+                            onClick = { appState.navigateToTopLevel(screen.route) },
                             icon = {
                                 Icon(
-                                    imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                    contentDescription = stringResource(item.iconTextId)
+                                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+                                    contentDescription = stringResource(screen.iconTextId)
                                 )
                             },
-                            label = { Text(stringResource(item.iconTextId)) }
+                            label = { Text(stringResource(screen.iconTextId)) }
                         )
                     }
                 }
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "home_route",
+        AppNavHost(
+            appState = appState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -110,16 +79,6 @@ fun OptimalApp(
                 .windowInsetsPadding(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
                 )
-        ) {
-            composable("home_route") {
-                // TODO
-            }
-            composable("workout_route") {
-                // TODO
-            }
-            composable("profile_route") {
-                // TODO
-            }
-        }
+        )
     }
 }
