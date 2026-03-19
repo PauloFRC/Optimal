@@ -1,5 +1,7 @@
 package dev.optimal.tracker.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -11,14 +13,18 @@ import dev.optimal.tracker.workout.navigation.workoutNavGraph
 @Composable
 fun AppNavHost(
     appState: OptimalAppState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val navController = appState.navController
 
     NavHost(
         navController = navController,
         startDestination = TopLevelRoute.Home,
-        modifier = modifier
+        modifier = modifier,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
         homeNavGraph(
             onNavigateToWorkout = {
