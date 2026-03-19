@@ -10,27 +10,48 @@ val OptimalTypography = Typography(
         fontFamily = SansFlex,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 40.sp
+        lineHeight = 40.sp,
+        color = HighEmphasis
     ),
 
     headlineMedium = TextStyle(
         fontFamily = SansFlex,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        lineHeight = 32.sp
+        lineHeight = 32.sp,
+        color = HighEmphasis
     ),
 
-    bodyLarge = TextStyle(
+
+    headlineSmall = TextStyle(
+        fontFamily = SansFlex,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        color = HighEmphasis
+    ),
+
+    bodyMedium = TextStyle(
         fontFamily = SansFlex,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        color = HighEmphasis
     ),
 
     labelMedium = TextStyle(
         fontFamily = SansFlex,
         fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        color = MediumEmphasis
+    ),
+
+    labelSmall = TextStyle(
+        fontFamily = SansFlex,
+        fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 16.sp
+        lineHeight = 16.sp,
+        color = MediumEmphasis
     )
 )

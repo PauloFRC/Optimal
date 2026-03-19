@@ -1,51 +1,61 @@
 package dev.optimal.tracker.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.optimal.tracker.designsystem.theme.OptimalTheme
+import dev.optimal.tracker.home.components.SessionHistoryCard
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun HomeScreenRoute(
     onStartWorkoutClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
-        uiState = uiState.value,
+        uiState = uiState,
         onStartWorkoutClick = onStartWorkoutClick
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun HomeScreen(
     uiState: HomeState,
     onStartWorkoutClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+    LazyColumn(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
     ) {
-        Text(
-            text = "Home",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        items(uiState.sessionHistory) { session ->
+            SessionHistoryCard(
+                session = session,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(
-        uiState = HomeState(),
-        onStartWorkoutClick = {}
-    )
+    OptimalTheme {
+        HomeScreen(
+            uiState = HomeState(),
+            onStartWorkoutClick = {}
+        )
+    }
 }

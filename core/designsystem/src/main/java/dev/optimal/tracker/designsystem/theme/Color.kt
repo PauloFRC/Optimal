@@ -16,3 +16,8 @@ val Charcoal = Color(0xFF121212)
 val Success = Color(0xFF7DBFA8)
 val Warning = Color(0xFFC8A87A)
 val Danger = Color(0xFFE87A7A)
+
+// emphasis colors
+val HighEmphasis = Titanium
+val MediumEmphasis = Titanium.copy(alpha = 0.6f)
+val DisabledEmphasis = Titanium.copy(alpha = 0.38f)

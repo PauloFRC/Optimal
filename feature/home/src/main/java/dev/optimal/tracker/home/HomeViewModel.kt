@@ -1,5 +1,7 @@
 package dev.optimal.tracker.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,15 +14,18 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val workoutSessionRepository: WorkoutSessionRepository
 ) : ViewModel() {
+    @RequiresApi(Build.VERSION_CODES.O)
     private val _uiState = MutableStateFlow(HomeState())
+    @RequiresApi(Build.VERSION_CODES.O)
     val uiState: StateFlow<HomeState> = _uiState.asStateFlow()
 
     init {
-        observeWorkoutSessions()
+//        observeWorkoutSessions()
     }
 
     fun handle(action: HomeAction) {
@@ -29,6 +34,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observeWorkoutSessions() {
         workoutSessionRepository
             .getOrderedWorkoutSessions()
