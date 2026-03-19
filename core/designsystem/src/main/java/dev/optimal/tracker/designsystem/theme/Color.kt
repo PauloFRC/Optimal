@@ -8,6 +8,7 @@ val Titanium = Color(0xFFA8B8C8)
 val Slate = Color(0xFF8899AA)
 val Iron = Color(0xFF6E7E8E)
 val Dim = Color(0xFF555E66)
+val Nero = Color(0xFF2A2A2A)
 val LighterCharcoal = Color(0xFF1E1E1E)
 val Charcoal = Color(0xFF121212)
 

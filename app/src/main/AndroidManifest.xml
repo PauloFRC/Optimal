@@ -11,13 +11,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.splashScreenTheme"
+        android:theme="@style/Theme.Optimal"
         tools:targetApi="31">
         <activity
             android:name="dev.optimal.tracker.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.splashScreenTheme">
+            android:theme="@style/Theme.Optimal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
