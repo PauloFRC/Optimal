@@ -1,5 +1,6 @@
 package dev.optimal.tracker.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -30,14 +31,16 @@ fun OptimalBottomAppBar(
     currentTopLevel: TopLevelDestination<TopLevelRoute>?,
     onNavigate: (TopLevelRoute) -> Unit,
 ) {
-    Column{
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+    ){
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface,
             windowInsets = WindowInsets.safeDrawing.only(
                 WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-            )
+            ),
         ) {
             topLevelDestinations.forEach { screen ->
                 val selected = currentTopLevel?.route == screen.route
@@ -48,7 +51,7 @@ fun OptimalBottomAppBar(
                         Icon(
                             imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
                             contentDescription = stringResource(screen.iconTextId),
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     },
                     label = { Text(stringResource(screen.iconTextId)) },

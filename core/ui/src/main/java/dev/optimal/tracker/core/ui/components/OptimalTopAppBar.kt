@@ -1,4 +1,4 @@
-package dev.optimal.tracker.core.ui
+package dev.optimal.tracker.core.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets

@@ -13,7 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import dev.optimal.tracker.core.ui.OptimalTopAppBar
+import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.navigation.AppNavHost
 import dev.optimal.tracker.navigation.topLevelDestinations
 
@@ -22,7 +22,6 @@ import dev.optimal.tracker.navigation.topLevelDestinations
 fun OptimalApp() {
     val appState = rememberOptimalAppState()
     val currentTopLevel = appState.currentTopLevel
-    val isTopLevel = appState.isTopLevelDestination
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -35,30 +34,6 @@ fun OptimalApp() {
                 onNavigate = appState::navigateToTopLevel
             )
         }
-//        bottomBar = {
-//            if (isTopLevel) {
-//                NavigationBar(
-//                    windowInsets = WindowInsets.safeDrawing.only(
-//                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-//                    )
-//                ) {
-//                    topLevelDestinations.forEach { screen ->
-//                        val selected = currentTopLevel?.route == screen.route
-//                        NavigationBarItem(
-//                            selected = selected,
-//                            onClick = { appState.navigateToTopLevel(screen.route) },
-//                            icon = {
-//                                Icon(
-//                                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
-//                                    contentDescription = stringResource(screen.iconTextId)
-//                                )
-//                            },
-//                            label = { Text(stringResource(screen.iconTextId)) }
-//                        )
-//                    }
-//                }
-//            }
-//        }
     ) { innerPadding ->
         AppNavHost(
             appState = appState,
