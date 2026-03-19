@@ -46,7 +46,7 @@ fun SessionHistoryCard(
         contentColor = MaterialTheme.colorScheme.onSurface,
         border = BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.outline
+            color = MaterialTheme.colorScheme.outlineVariant
         ),
         modifier = modifier.fillMaxWidth()
     ) {
