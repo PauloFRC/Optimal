@@ -1,4 +1,4 @@
-package dev.optimal.tracker.home
+package dev.optimal.tracker.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun HomeScreenRoute(
+fun ProfileScreenRoute(
     onStartWorkoutClick: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
     HomeScreen(
@@ -26,7 +26,7 @@ fun HomeScreenRoute(
 
 @Composable
 fun HomeScreen(
-    uiState: HomeState,
+    uiState: ProfileState,
     onStartWorkoutClick: () -> Unit
 ) {
     Column(
@@ -35,7 +35,7 @@ fun HomeScreen(
             .padding(16.dp),
     ) {
         Text(
-            text = "Home",
+            text = "Profile",
             style = MaterialTheme.typography.headlineMedium
         )
     }
@@ -45,7 +45,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        uiState = HomeState(),
+        uiState = ProfileState(),
         onStartWorkoutClick = {}
     )
 }

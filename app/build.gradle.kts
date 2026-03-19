@@ -77,6 +77,7 @@ dependencies {
 
     implementation(project(":feature:home"))
     implementation(project(":feature:workout"))
+    implementation(project(":feature:profile"))
 
 }
 

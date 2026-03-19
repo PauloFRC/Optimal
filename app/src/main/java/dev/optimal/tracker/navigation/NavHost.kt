@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import dev.optimal.tracker.home.navigation.homeNavGraph
+import dev.optimal.tracker.profile.navigation.profileNavGraph
 import dev.optimal.tracker.ui.OptimalAppState
 import dev.optimal.tracker.workout.navigation.workoutNavGraph
 
@@ -34,12 +35,11 @@ fun AppNavHost(
             },
             onNavigateBack = appState::tryPopBack
         )
-//
-//        profileGraph(
-//            onNavigateToSettings = {
-//                navController.navigate(SettingsRoute)
-//            },
-//            onNavigateBack = appState::tryPopBack
-//        )
+
+        profileNavGraph(
+            onNavigateToWorkout = {
+                appState.navigateToTopLevel(TopLevelRoute.Workout)
+            }
+        )
     }
 }
