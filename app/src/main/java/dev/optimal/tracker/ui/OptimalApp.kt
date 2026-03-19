@@ -9,11 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,42 +28,37 @@ fun OptimalApp() {
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = { OptimalTopAppBar(currentTopLevel?.let { stringResource(it.titleTextId) }) },
-//        topBar = {
-//            if (isTopLevel && currentTopLevel != null) {
-//                TopAppBar(
-//                    title = { Text(stringResource(currentTopLevel.titleTextId)) },
-//                    colors = TopAppBarDefaults.topAppBarColors(
-//                        containerColor = MaterialTheme.colorScheme.background,
-//                        titleContentColor = MaterialTheme.colorScheme.onBackground
-//                    ),
-//                    windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-//                )
-//            }
-//        },
         bottomBar = {
-            if (isTopLevel) {
-                NavigationBar(
-                    windowInsets = WindowInsets.safeDrawing.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                    )
-                ) {
-                    topLevelDestinations.forEach { screen ->
-                        val selected = currentTopLevel?.route == screen.route
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = { appState.navigateToTopLevel(screen.route) },
-                            icon = {
-                                Icon(
-                                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
-                                    contentDescription = stringResource(screen.iconTextId)
-                                )
-                            },
-                            label = { Text(stringResource(screen.iconTextId)) }
-                        )
-                    }
-                }
-            }
+            OptimalBottomAppBar(
+                topLevelDestinations = topLevelDestinations,
+                currentTopLevel = currentTopLevel,
+                onNavigate = appState::navigateToTopLevel
+            )
         }
+//        bottomBar = {
+//            if (isTopLevel) {
+//                NavigationBar(
+//                    windowInsets = WindowInsets.safeDrawing.only(
+//                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+//                    )
+//                ) {
+//                    topLevelDestinations.forEach { screen ->
+//                        val selected = currentTopLevel?.route == screen.route
+//                        NavigationBarItem(
+//                            selected = selected,
+//                            onClick = { appState.navigateToTopLevel(screen.route) },
+//                            icon = {
+//                                Icon(
+//                                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+//                                    contentDescription = stringResource(screen.iconTextId)
+//                                )
+//                            },
+//                            label = { Text(stringResource(screen.iconTextId)) }
+//                        )
+//                    }
+//                }
+//            }
+//        }
     ) { innerPadding ->
         AppNavHost(
             appState = appState,

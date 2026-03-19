@@ -11,7 +11,7 @@ import androidx.compose.material.icons.outlined.SportsGymnastics
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.optimal.tracker.R
 
-data class TopLevelDestination<T : Any>(
+data class TopLevelDestination<out T : Any>(
     val route: T,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
