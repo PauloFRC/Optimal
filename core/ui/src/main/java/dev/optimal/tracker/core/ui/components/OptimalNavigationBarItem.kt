@@ -57,7 +57,7 @@ fun RowScope.OptimalNavigationBarItem(
         Box(
             modifier = Modifier
                 .height(indicatorHeight)
-                .fillMaxWidth(0.5f)
+                .fillMaxWidth(0.4f)
                 .background(
                     color = contentColor,
                     shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomEnd = 8.dp, bottomStart = 8.dp)
