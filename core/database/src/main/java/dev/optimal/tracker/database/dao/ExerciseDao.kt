@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import dev.optimal.tracker.database.enums.ExerciseType
+import dev.optimal.tracker.model.workout.enums.ExerciseType
 import dev.optimal.tracker.database.model.workout.ExerciseEntity
 
 @Dao

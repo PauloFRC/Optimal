@@ -11,3 +11,5 @@ data class WorkoutSessionModel(
     val endDate: LocalDateTime?,
     val exercises: List<SessionExerciseModel>
 )
+
+

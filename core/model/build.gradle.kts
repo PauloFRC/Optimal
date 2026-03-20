@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "dev.optimal.tracker.core.model"
 }
-
-dependencies {
-    implementation(project(":core:database"))
-}

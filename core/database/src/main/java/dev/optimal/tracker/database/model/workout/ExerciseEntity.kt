@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import dev.optimal.tracker.database.enums.ExerciseType
+import dev.optimal.tracker.model.workout.enums.ExerciseType
 
 @Entity(
     tableName = "exercise",

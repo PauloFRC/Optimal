@@ -24,8 +24,13 @@ import dev.optimal.tracker.designsystem.theme.MediumEmphasis
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.model.workout.SessionExerciseModel
+import dev.optimal.tracker.model.workout.SessionSetModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
+import dev.optimal.tracker.model.workout.enums.SetType
+import dev.optimal.tracker.model.workout.getBestSet
+import dev.optimal.tracker.model.workout.getWorkingSets
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun SessionHistoryCard(
@@ -35,7 +40,7 @@ fun SessionHistoryCard(
     val formattedDuration = session.endDate?.let {
         OptimalDateTimeFormatter.formatDuration(session.startDate, it)
     } ?: ""
-    val formateddDate = OptimalDateTimeFormatter.formatDate(session.startDate)
+    val formattedDate = OptimalDateTimeFormatter.formatDate(session.startDate)
 
     Surface(
         shape = RoundedCornerShape(16.dp),
@@ -84,7 +89,7 @@ fun SessionHistoryCard(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = formateddDate,
+                    text = formattedDate,
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -95,21 +100,30 @@ fun SessionHistoryCard(
             )
 
             Column {
-                session.exercises.forEach {
+                session.exercises.forEach { exercise ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 2.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        val setsExerciseFormatted = "${exercise.getWorkingSets().size} x ${exercise.name}"
                         Text(
-                            text = it.name,
+                            text = setsExerciseFormatted,
                             style = MaterialTheme.typography.labelMedium
                         )
+
+                        val bestSetFormatted = exercise.getBestSet()?.let {
+                            val weightStr = it.weight?.let { w ->
+                                if (w % 1.0 == 0.0) w.toInt().toString()
+                                else String.format(Locale.US, "%.1f", w)
+                            } ?: return@let null
+                            "$weightStr kg x ${it.reps}"
+                        } ?: ""
                         Text(
-                            text = it.sets.size.toString(),
+                            text = bestSetFormatted,
                             style = MaterialTheme.typography.labelMedium
-                        ) //TODO: get best set
+                        )
                     }
                 }
             }
@@ -120,6 +134,24 @@ fun SessionHistoryCard(
 @Preview
 @Composable
 fun SessionHistoryCardPreview() {
+    val set1 = SessionSetModel(
+        id = 1,
+        order = 1,
+        type = SetType.WORKING,
+        isCompleted = true,
+        reps = 10,
+        weight = 100.0,
+        rir = null
+    )
+    val set2 = SessionSetModel(
+        id = 1,
+        order = 1,
+        type = SetType.WORKING,
+        isCompleted = true,
+        reps = 10,
+        weight = 90.0,
+        rir = null
+    )
     val session = WorkoutSessionModel(
         id = 1,
         workoutModelId = 1,
@@ -128,9 +160,9 @@ fun SessionHistoryCardPreview() {
         startDate = java.time.LocalDateTime.now(),
         endDate = java.time.LocalDateTime.now(),
         exercises = listOf(
-            SessionExerciseModel(1, "Bench Press", listOf()),
-            SessionExerciseModel(2, "Squat", listOf()),
-            SessionExerciseModel(3, "Deadlift", listOf())
+            SessionExerciseModel(1, "Bench Press", listOf(set1, set2)),
+            SessionExerciseModel(2, "Squat", listOf(set1, set2)),
+            SessionExerciseModel(3, "Deadlift", listOf(set1, set2))
         )
     )
     OptimalTheme {

@@ -1,7 +1,7 @@
 package dev.optimal.tracker.database.model.workout.converters
 
 import androidx.room.TypeConverter
-import dev.optimal.tracker.database.enums.SetType
+import dev.optimal.tracker.model.workout.enums.SetType
 
 class SetTypeConverter {
     @TypeConverter

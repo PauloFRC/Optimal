@@ -1,12 +1,9 @@
 package dev.optimal.tracker.database.model.workout.converters
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
 
 class DateTimeConverter {
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromTimestamp(value: String?): LocalDateTime? {
         return value?.let { LocalDateTime.parse(it) }

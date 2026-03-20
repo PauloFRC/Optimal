@@ -1,6 +1,6 @@
 package dev.optimal.tracker.model.workout
 
-import dev.optimal.tracker.database.enums.SetType
+import dev.optimal.tracker.model.workout.enums.SetType
 
 data class SessionSetModel(
     val id: Long,

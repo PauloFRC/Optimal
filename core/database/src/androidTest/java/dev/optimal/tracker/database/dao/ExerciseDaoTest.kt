@@ -1,7 +1,7 @@
 package dev.optimal.tracker.database.dao
 
-import dev.optimal.tracker.database.enums.ExerciseType
 import dev.optimal.tracker.database.model.workout.ExerciseEntity
+import dev.optimal.tracker.model.workout.enums.ExerciseType
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

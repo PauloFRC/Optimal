@@ -1,9 +1,9 @@
 package dev.optimal.tracker.database.dao
 
-import dev.optimal.tracker.database.enums.SetType
 import dev.optimal.tracker.database.model.workout.ModelExerciseEntity
 import dev.optimal.tracker.database.model.workout.ModelSetEntity
 import dev.optimal.tracker.database.model.workout.WorkoutModelEntity
+import dev.optimal.tracker.model.workout.enums.SetType
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
