@@ -1,7 +1,5 @@
 package dev.optimal.tracker.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +14,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.home.components.SessionHistoryCard
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun HomeScreenRoute(
     onStartWorkoutClick: () -> Unit,
@@ -29,7 +26,6 @@ fun HomeScreenRoute(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun HomeScreen(
     uiState: HomeState,
@@ -48,7 +44,6 @@ fun HomeScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Preview
 @Composable
 fun HomeScreenPreview() {

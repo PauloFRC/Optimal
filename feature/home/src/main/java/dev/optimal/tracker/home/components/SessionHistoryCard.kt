@@ -1,7 +1,5 @@
 package dev.optimal.tracker.home.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,23 +20,17 @@ import androidx.compose.ui.unit.dp
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.model.workout.SessionExerciseModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
-import java.time.Duration
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import dev.optimal.tracker.utils.OptimalDateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SessionHistoryCard(
     session: WorkoutSessionModel,
     modifier: Modifier = Modifier
 ) {
-    //TODO: move to utils and make year only appear in past years
-    val duration = Duration.between(session.startDate, session.endDate)
-    val hours = duration.toHours()
-    val minutes = duration.toMinutesPart()
-    val durationStr = String.format(Locale.US, "%dh%02dm", hours, minutes)
-    val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
-    val startDateStr = session.startDate.toLocalDate().format(dateFormatter)
+    val formattedDuration = session.endDate?.let {
+        OptimalDateTimeFormatter.formatDuration(session.startDate, it)
+    } ?: ""
+    val formateddDate = OptimalDateTimeFormatter.formatDate(session.startDate)
 
     Surface(
         shape = RoundedCornerShape(16.dp),
@@ -72,7 +64,7 @@ fun SessionHistoryCard(
             Row() {
                 // Icon() TODO
                 Text(
-                    text = durationStr,
+                    text = formattedDuration,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
@@ -80,7 +72,7 @@ fun SessionHistoryCard(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = startDateStr,
+                    text = formateddDate,
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -90,7 +82,7 @@ fun SessionHistoryCard(
                 color = MaterialTheme.colorScheme.outlineVariant
             )
 
-            Column() {
+            Column {
                 session.exercises.forEach {
                     Row(
                         modifier = Modifier
@@ -113,7 +105,6 @@ fun SessionHistoryCard(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Preview
 @Composable
 fun SessionHistoryCardPreview() {
