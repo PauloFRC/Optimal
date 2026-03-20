@@ -12,4 +12,7 @@ data class WorkoutSessionModel(
     val exercises: List<SessionExerciseModel>
 )
 
-
+//TODO: change to look at db for PRs for each exercise
+fun WorkoutSessionModel.getPersonalRecords() : List<SessionExerciseModel> {
+    return exercises.filter { it.getBestSet()?.weight != null }
+}

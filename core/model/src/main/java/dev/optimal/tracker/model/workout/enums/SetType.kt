@@ -5,6 +5,7 @@ enum class SetType {
     WORKING
 }
 
+// TODO: move to dedicated file
 enum class ExerciseType {
     REPS_WEIGHT,
     REPS,

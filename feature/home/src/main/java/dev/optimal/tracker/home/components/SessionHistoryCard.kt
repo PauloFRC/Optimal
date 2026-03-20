@@ -28,6 +28,7 @@ import dev.optimal.tracker.model.workout.SessionSetModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.model.workout.enums.SetType
 import dev.optimal.tracker.model.workout.getBestSet
+import dev.optimal.tracker.model.workout.getPersonalRecords
 import dev.optimal.tracker.model.workout.getWorkingSets
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
 import java.util.Locale
@@ -63,8 +64,12 @@ fun SessionHistoryCard(
                     text = session.name,
                     style = MaterialTheme.typography.headlineSmall
                 )
+
+                val personalRecordsFormatted = session.getPersonalRecords().size
+                    .takeIf { it > 0 }
+                    ?.let { "$it PRs" } ?: ""
                 Text(
-                    text = "3 Prs",
+                    text = personalRecordsFormatted,
                     style = MaterialTheme.typography.labelSmall,
                 ) //TODO
             }
