@@ -14,5 +14,5 @@ fun SessionExerciseModel.getBestSet(): SessionSetModel? {
 }
 
 fun SessionExerciseModel.getWorkingSets() : List<SessionSetModel> {
-    return sets.filter { it.type == SetType.WORKING }
+    return sets.filter { it.type == SetType.WORKING && it.isCompleted }
 }

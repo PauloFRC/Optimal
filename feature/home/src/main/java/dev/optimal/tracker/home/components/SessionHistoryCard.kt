@@ -128,23 +128,23 @@ fun SessionHistoryCard(
                             .padding(vertical = 2.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        val setsExerciseFormatted = "${exercise.getWorkingSets().size} x ${exercise.name}"
-                        Text(
-                            text = setsExerciseFormatted,
-                            style = MaterialTheme.typography.labelMedium
-                        )
+                        if (exercise.getWorkingSets().isNotEmpty()) {
+                            Text(
+                                text = "${exercise.getWorkingSets().size} x ${exercise.name}",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
 
-                        val bestSetFormatted = exercise.getBestSet()?.let {
-                            val weightStr = it.weight?.let { w ->
+                        exercise.getBestSet()?.let { set ->
+                            val weightStr = set.weight?.let { w ->
                                 if (w % 1.0 == 0.0) w.toInt().toString()
-                                else String.format(Locale.US, "%.1f", w)
-                            } ?: return@let null
-                            "$weightStr kg x ${it.reps}"
-                        } ?: ""
-                        Text(
-                            text = bestSetFormatted,
-                            style = MaterialTheme.typography.labelMedium
-                        )
+                                else String.format(Locale.US, "%,1f", w)
+                            } ?: return@let
+                            Text(
+                                text = "$weightStr kg x ${set.reps}",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
                     }
                 }
             }
