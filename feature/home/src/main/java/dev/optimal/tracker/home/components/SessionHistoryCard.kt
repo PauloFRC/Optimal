@@ -10,14 +10,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.optimal.tracker.designsystem.theme.MediumEmphasis
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
+import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.model.workout.SessionExerciseModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
@@ -61,8 +66,15 @@ fun SessionHistoryCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row() {
-                // Icon() TODO
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_time),
+                    contentDescription = "time icon",
+                    tint = MediumEmphasis,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
                 Text(
                     text = formattedDuration,
                     style = MaterialTheme.typography.labelMedium

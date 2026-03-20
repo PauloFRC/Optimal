@@ -10,7 +10,7 @@ object OptimalDateTimeFormatter {
         val duration = Duration.between(startDate, endDate)
         val hours = duration.toHours()
         val minutes = duration.toMinutes() % 60
-        return String.format(Locale.US, "%dh%02dm", hours, minutes)
+        return String.format(Locale.US, "%dh %02dm", hours, minutes)
     }
 
     fun formatDate(date: LocalDateTime): String {
