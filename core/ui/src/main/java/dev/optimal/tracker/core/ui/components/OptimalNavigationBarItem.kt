@@ -24,16 +24,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun RowScope.OptimalNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
-    icon: ImageVector,
+    unselectedIconRes: Int,
+    selectedIconRes: Int,
     label: String
 ) {
+    val iconPainter = painterResource(
+        when {
+            selected -> selectedIconRes
+            else -> unselectedIconRes
+        }
+    )
     val contentColor by animateColorAsState(
         targetValue = if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -68,7 +75,7 @@ fun RowScope.OptimalNavigationBarItem(
         Spacer(modifier = Modifier.weight(1f))
 
         Icon(
-            imageVector = icon,
+            painter = iconPainter,
             contentDescription = label,
             modifier = Modifier.size(24.dp),
             tint = contentColor

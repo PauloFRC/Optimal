@@ -34,7 +34,8 @@ fun OptimalBottomAppBar(
                 OptimalNavigationBarItem(
                     selected = selected,
                     onClick = { onNavigate(screen.route) },
-                    icon = screen.unselectedIcon,
+                    unselectedIconRes = screen.unselectedIcon,
+                    selectedIconRes = screen.selectedIcon,
                     label = stringResource(screen.iconTextId)
                 )
             }
