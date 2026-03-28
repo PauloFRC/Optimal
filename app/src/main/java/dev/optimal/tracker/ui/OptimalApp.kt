@@ -61,8 +61,8 @@ fun OptimalApp() {
                 )
                 .swipeToNavigate(
                     destinations = topLevelDestinations,
-                    current = currentDestination,
-                    onNavigate = { appState.navigateToTopLevel(it.route) }
+                    currentTopLevel = currentDestination,
+                    onNavigate = appState::navigateToTopLevel
                 )
         )
     }
@@ -70,23 +70,23 @@ fun OptimalApp() {
 
 private fun Modifier.swipeToNavigate(
     destinations: List<TopLevelDestination<TopLevelRoute>>,
-    current: TopLevelDestination<TopLevelRoute>?,
-    onNavigate: (TopLevelDestination<TopLevelRoute>) -> Unit,
-    thresholdDp: Float = 72f,
+    currentTopLevel: TopLevelDestination<TopLevelRoute>?,
+    onNavigate: (TopLevelRoute) -> Unit,
+    thresholdDp: Int = 72,
 ): Modifier = composed {
     val thresholdPx = with(LocalDensity.current) { thresholdDp.dp.toPx() }
-    var accumulated by remember(current) { mutableFloatStateOf(0f) }
+    var accumulated by remember(currentTopLevel) { mutableFloatStateOf(0f) }
 
-    pointerInput(current) {
+    pointerInput(currentTopLevel) {
         detectHorizontalDragGestures(
             onDragCancel = { accumulated = 0f },
             onDragEnd = {
-                val index = destinations.indexOf(current)
+                val index = destinations.indexOf(currentTopLevel)
                 when {
                     accumulated < -thresholdPx && index < destinations.lastIndex ->
-                        onNavigate(destinations[index + 1])
+                        onNavigate(destinations[index + 1].route)
                     accumulated > thresholdPx && index > 0 ->
-                        onNavigate(destinations[index - 1])
+                        onNavigate(destinations[index - 1].route)
                 }
                 accumulated = 0f
             },
