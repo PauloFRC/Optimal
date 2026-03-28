@@ -12,22 +12,37 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import dev.optimal.tracker.core.designsystem.R
+import dev.optimal.tracker.core.model.DropdownAction
+import dev.optimal.tracker.core.model.TopBarAction
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OptimalTopAppBar(
-    title: String?
+    title: String?,
+    modifier: Modifier = Modifier,
+    actions: List<TopBarAction>? = null
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         TopAppBar(
             title = { Text(text = title ?: "") },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 titleContentColor = MaterialTheme.colorScheme.onBackground
             ),
-            windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+            windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
+            actions = {
+                actions?.let {
+                    TopBarActionRow(
+                        actions = actions
+                    )
+                }
+            }
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
@@ -37,6 +52,14 @@ fun OptimalTopAppBar(
 @Composable
 fun SimplePreview() {
     OptimalTheme {
-        OptimalTopAppBar("Title")
+        OptimalTopAppBar(
+            "Title",
+            actions = listOf(
+                DropdownAction(
+                    R.string.core_designsystem_dropdown_description,
+                    onClick = {}
+                )
+            )
+        )
     }
 }

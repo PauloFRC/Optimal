@@ -1,11 +1,11 @@
-package model
+package dev.optimal.tracker.core.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 
-interface MenuAction {
+interface TopBarAction {
     val onClick: () -> Unit
     val isVisible: Boolean
 }
@@ -16,13 +16,13 @@ data class IconAction(
     override val onClick: () -> Unit,
     override val isVisible: Boolean = true,
     val tint: Color? = null
-) : MenuAction
+) : TopBarAction
 
 data class DropdownAction(
     @StringRes val titleRes: Int,
     override val onClick: () -> Unit,
     override val isVisible: Boolean = true,
-) : MenuAction
+) : TopBarAction
 
 data class TextAction(
     @StringRes val titleRes: Int,
@@ -32,4 +32,4 @@ data class TextAction(
     val isEnabled: Boolean = true,
     override val onClick: () -> Unit,
     override val isVisible: Boolean = true,
-) : MenuAction
+) : TopBarAction
