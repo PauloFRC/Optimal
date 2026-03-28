@@ -15,22 +15,22 @@ data class TopLevelDestination<out T : Any>(
 val topLevelDestinations = listOf(
     TopLevelDestination(
         route = TopLevelRoute.Home,
-        selectedIcon = R.drawable.home_filled,
-        unselectedIcon = R.drawable.home_outline,
+        selectedIcon = R.drawable.ic_home_filled,
+        unselectedIcon = R.drawable.ic_home_outline,
         iconTextId = R.string.home_icon_description,
         titleTextId = R.string.app_name,
     ),
     TopLevelDestination(
         route = TopLevelRoute.Workout,
-        selectedIcon = R.drawable.dumbell_filled,
-        unselectedIcon = R.drawable.dumbell_outline,
+        selectedIcon = R.drawable.ic_dumbell_filled,
+        unselectedIcon = R.drawable.ic_dumbell_outline,
         iconTextId = R.string.workout_icon_description,
         titleTextId = R.string.app_name,
     ),
     TopLevelDestination(
         route = TopLevelRoute.Profile,
-        selectedIcon = R.drawable.profile_filled,
-        unselectedIcon = R.drawable.profile_outline,
+        selectedIcon = R.drawable.ic_profile_filled,
+        unselectedIcon = R.drawable.ic_profile_outline,
         iconTextId = R.string.profile_icon_description,
         titleTextId = R.string.app_name,
     )
