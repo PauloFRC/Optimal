@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">Optimal</string>
-    <string name="home_icon_description">Home</string>
-    <string name="workout_icon_description">Workout</string>
-    <string name="profile_icon_description">Profile</string>
-    <string name="search">Profile</string>
 </resources>

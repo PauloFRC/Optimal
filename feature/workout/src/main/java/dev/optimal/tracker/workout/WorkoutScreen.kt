@@ -8,9 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
+import dev.optimal.tracker.feature.workout.R
 
 @Composable
 fun WorkoutScreenRoute(
@@ -20,12 +23,19 @@ fun WorkoutScreenRoute(
     viewModel: WorkoutViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    WorkoutScreen(
-        uiState = uiState.value,
-        onNavigateToSession = onNavigateToSession,
-        onNavigateToDetail = onNavigateToDetail,
-        onNavigateBack = onNavigateBack
-    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        OptimalTopAppBar(
+            title = stringResource(R.string.feature_workout_title)
+        )
+
+        WorkoutScreen(
+            uiState = uiState.value,
+            onNavigateToSession = onNavigateToSession,
+            onNavigateToDetail = onNavigateToDetail,
+            onNavigateBack = onNavigateBack
+        )
+    }
 }
 
 @Composable

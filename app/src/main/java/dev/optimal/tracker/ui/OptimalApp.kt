@@ -1,6 +1,9 @@
 package dev.optimal.tracker.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -22,12 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.optimal.tracker.R
-import dev.optimal.tracker.core.model.IconAction
-import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
-import dev.optimal.tracker.core.ui.components.SearchTopAppBar
 import dev.optimal.tracker.navigation.AppNavHost
 import dev.optimal.tracker.navigation.TopLevelDestination
 import dev.optimal.tracker.navigation.TopLevelRoute
@@ -39,6 +37,8 @@ fun OptimalApp() {
     val appState = rememberOptimalAppState()
     val currentDestination = appState.currentTopLevel
 
+    val isTopLevelDestination = currentDestination != null
+
     var isSearchActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     BackHandler(enabled = isSearchActive) {
@@ -49,35 +49,18 @@ fun OptimalApp() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            if (isSearchActive) {
-                SearchTopAppBar(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    onCloseClicked = {
-                        isSearchActive = false
-                        searchQuery = ""
-                    }
-                )
-            } else {
-                OptimalTopAppBar(
-                    title = currentDestination?.let { stringResource(it.titleTextId) },
-                    actions = listOf(
-                        IconAction(
-                            titleRes = R.string.search,
-                            iconRes = R.drawable.ic_search,
-                            onClick = { isSearchActive = true }
-                        )
-                    )
+        bottomBar = {
+            AnimatedVisibility(
+                visible = isTopLevelDestination,
+                enter = slideInVertically { height -> height },
+                exit = slideOutVertically { height -> height }
+            ) {
+                OptimalBottomAppBar(
+                    topLevelDestinations = topLevelDestinations,
+                    currentTopLevel = currentDestination,
+                    onNavigate = appState::navigateToTopLevel
                 )
             }
-        },
-        bottomBar = {
-            OptimalBottomAppBar(
-                topLevelDestinations = topLevelDestinations,
-                currentTopLevel = currentDestination,
-                onNavigate = appState::navigateToTopLevel
-            )
         }
     ) { innerPadding ->
         AppNavHost(

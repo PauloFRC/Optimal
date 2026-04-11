@@ -1,6 +1,9 @@
 package dev.optimal.tracker.home
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -8,16 +11,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.optimal.tracker.core.model.IconAction
+import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
+import dev.optimal.tracker.core.ui.components.SearchTopAppBar
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
+import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.home.components.SessionHistoryCard
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
+import dev.optimal.tracker.core.designsystem.R as CoreR
 
 @Composable
 fun HomeScreenRoute(
@@ -25,10 +37,43 @@ fun HomeScreenRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    HomeScreen(
-        uiState = uiState,
-        onStartWorkoutClick = onStartWorkoutClick
-    )
+
+    var isSearchActive by rememberSaveable { mutableStateOf(false) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    BackHandler(enabled = isSearchActive) {
+        isSearchActive = false
+        searchQuery = ""
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (isSearchActive) {
+            SearchTopAppBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
+                onCloseClicked = {
+                    isSearchActive = false
+                    searchQuery = ""
+                }
+            )
+        } else {
+            OptimalTopAppBar(
+                title = stringResource(R.string.feature_home_title),
+                actions = listOf(
+                    IconAction(
+                        titleRes = CoreR.string.core_designsystem_search,
+                        iconRes = CoreR.drawable.ic_search,
+                        onClick = { isSearchActive = true }
+                    )
+                )
+            )
+        }
+
+        HomeScreen(
+            uiState = uiState,
+            onStartWorkoutClick = onStartWorkoutClick
+        )
+    }
 }
 
 @Composable

@@ -1,3 +1,4 @@
 <resources>
     <string name="core_designsystem_dropdown_description">Dropdown button</string>
+    <string name="core_designsystem_search">Profile</string>
 </resources>
