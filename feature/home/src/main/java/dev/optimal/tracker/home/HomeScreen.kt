@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -46,6 +47,16 @@ fun HomeScreenRoute(
         searchQuery = ""
     }
 
+    val filteredSessions = remember(uiState.sessionHistory, searchQuery) {
+        if (searchQuery.isBlank()) {
+            uiState.sessionHistory
+        } else {
+            uiState.sessionHistory.filter { session ->
+                session.name.startsWith(prefix = searchQuery, ignoreCase = true)
+            }
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         if (isSearchActive) {
             SearchTopAppBar(
@@ -70,7 +81,7 @@ fun HomeScreenRoute(
         }
 
         HomeScreen(
-            uiState = uiState,
+            sessions = filteredSessions,
             onStartWorkoutClick = onStartWorkoutClick
         )
     }
@@ -78,10 +89,9 @@ fun HomeScreenRoute(
 
 @Composable
 fun HomeScreen(
-    uiState: HomeState,
+    sessions: List<WorkoutSessionModel>,
     onStartWorkoutClick: () -> Unit
 ) {
-    val sessions = uiState.sessionHistory
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
@@ -124,7 +134,7 @@ fun MonthIndicator(
 fun HomeScreenPreview() {
     OptimalTheme {
         HomeScreen(
-            uiState = HomeState(),
+            sessions = HomeState().sessionHistory,
             onStartWorkoutClick = {}
         )
     }
