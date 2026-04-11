@@ -1,0 +1,6 @@
+<resources>
+    <plurals name="feature_home_session_count">
+        <item quantity="one">%d session</item>
+        <item quantity="other">%d sessions</item>
+    </plurals>
+</resources>

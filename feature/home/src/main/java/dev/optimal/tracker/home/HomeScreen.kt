@@ -1,9 +1,12 @@
 package dev.optimal.tracker.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -15,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -99,7 +104,8 @@ fun HomeScreen(
         itemsIndexed(sessions) { index, session ->
             MonthIndicator(
                 currentSession = session,
-                previousSession = sessions.getOrNull(index - 1)
+                previousSession = sessions.getOrNull(index - 1),
+                sessions = sessions
             )
             SessionHistoryCard(
                 session = session,
@@ -113,19 +119,41 @@ fun HomeScreen(
 fun MonthIndicator(
     currentSession: WorkoutSessionModel,
     previousSession: WorkoutSessionModel?,
+    sessions: List<WorkoutSessionModel>
 ) {
     val isNewMonth = previousSession == null ||
             currentSession.startDate.month != previousSession.startDate.month ||
             currentSession.startDate.year != previousSession.startDate.year
 
     if (isNewMonth) {
-        Text(
-            text = OptimalDateTimeFormatter
-                .formatMonth(currentSession.startDate)
-                .uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.1.em),
-            modifier = Modifier.padding(bottom = 8.dp)
+        val sessionCount = sessions.count {
+            it.startDate.month == currentSession.startDate.month &&
+                    it.startDate.year == currentSession.startDate.year
+        }
+        val countText = pluralStringResource(
+            id = R.plurals.feature_home_session_count,
+            count = sessionCount,
+            sessionCount
         )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = OptimalDateTimeFormatter
+                    .formatMonth(currentSession.startDate)
+                    .uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.1.em)
+            )
+            Text(
+                text = countText,
+                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.1.em)
+            )
+        }
     }
 }
 
