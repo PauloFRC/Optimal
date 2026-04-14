@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,7 +90,11 @@ fun HomeScreenRoute(
 
         HomeScreen(
             sessions = filteredSessions,
-            onStartWorkoutClick = onStartWorkoutClick
+            onStartWorkoutClick = onStartWorkoutClick,
+            isSearchActive = isSearchActive,
+            onClearSearchClick = {
+                searchQuery = ""
+            }
         )
     }
 }
@@ -95,8 +102,30 @@ fun HomeScreenRoute(
 @Composable
 fun HomeScreen(
     sessions: List<WorkoutSessionModel>,
-    onStartWorkoutClick: () -> Unit
+    onStartWorkoutClick: () -> Unit,
+    isSearchActive: Boolean = false,
+    onClearSearchClick: () -> Unit = {}
 ) {
+    if (sessions.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.feature_home_empty_title),
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            if (isSearchActive) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onClearSearchClick) {
+                    Text(text = stringResource(R.string.feature_home_clear_search))
+                }
+            }
+        }
+        return
+    }
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
@@ -163,6 +192,17 @@ fun HomeScreenPreview() {
     OptimalTheme {
         HomeScreen(
             sessions = HomeState().sessionHistory,
+            onStartWorkoutClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenEmptyPreview() {
+    OptimalTheme {
+        HomeScreen(
+            sessions = listOf(),
             onStartWorkoutClick = {}
         )
     }
