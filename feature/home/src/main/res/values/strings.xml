@@ -4,4 +4,5 @@
     <string name="feature_home_best_set">Best set</string>
     <string name="feature_home_empty_title">No sessions found</string>
     <string name="feature_home_clear_search">Clear search</string>
+    <string name="feature_home_session_detail_title">Session Detail</string>
 </resources>

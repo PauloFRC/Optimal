@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,6 +28,8 @@ import dev.optimal.tracker.designsystem.theme.OptimalTheme
 fun OptimalTopAppBar(
     title: String?,
     modifier: Modifier = Modifier,
+    showBackIcon: Boolean = false,
+    onBackClick: () -> Unit = {},
     actions: List<TopBarAction>? = null
 ) {
     Column(
@@ -31,6 +37,16 @@ fun OptimalTopAppBar(
     ) {
         TopAppBar(
             title = { Text(text = title ?: "") },
+            navigationIcon = {
+                if (showBackIcon) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 titleContentColor = MaterialTheme.colorScheme.onBackground
@@ -54,6 +70,7 @@ fun SimplePreview() {
     OptimalTheme {
         OptimalTopAppBar(
             "Title",
+            showBackIcon = true,
             actions = listOf(
                 DropdownAction(
                     R.string.core_designsystem_dropdown_description,

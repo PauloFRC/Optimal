@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.designsystem.theme.Iron
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
+import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.model.workout.SessionExerciseModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.model.workout.getFormattedDuration
@@ -66,7 +68,13 @@ fun WorkoutSessionDetailErrorScreen(
     onRetryClick: () -> Unit
 ) {
     Scaffold(
-        topBar = { OptimalTopAppBar(title = "") }
+        topBar = {
+            OptimalTopAppBar(
+                title = stringResource(R.string.feature_home_session_detail_title),
+                showBackIcon = true,
+                onBackClick = {}
+            )
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -86,7 +94,13 @@ fun WorkoutSessionDetailContentScreen(
     val session = (uiState as? WorkoutSessionDetailState.Success)?.session
 
     Scaffold(
-        topBar = { OptimalTopAppBar(title = "") }
+        topBar = {
+            OptimalTopAppBar(
+                title = stringResource(R.string.feature_home_session_detail_title),
+                showBackIcon = true,
+                onBackClick = {}
+            )
+        }
     ) { padding ->
         Box(
             modifier = Modifier
