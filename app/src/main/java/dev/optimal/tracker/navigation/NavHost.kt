@@ -53,9 +53,10 @@ fun AppNavHost(
         },
     ) {
         homeNavGraph(
-            onNavigateToWorkout = {
-                appState.navigateToTopLevel(TopLevelRoute.Workout)
-            }
+            onNavigateToSessionDetail = { sessionId ->
+                appState.navigateToDetail(DetailRoute.WorkoutSession(sessionId))
+            },
+            onNavigateBack = appState::tryPopBack
         )
 
         workoutNavGraph(

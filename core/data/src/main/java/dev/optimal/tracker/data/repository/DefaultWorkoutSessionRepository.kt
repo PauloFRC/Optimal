@@ -15,4 +15,8 @@ internal class DefaultWorkoutSessionRepository @Inject constructor(
             sessions.map { it.toModel() }
         }
     }
+
+    override suspend fun getWorkoutSessionById(id: Long): WorkoutSessionModel? {
+        return workoutSessionDao.getWorkoutSessionWithExercises(id)?.toModel()
+    }
 }

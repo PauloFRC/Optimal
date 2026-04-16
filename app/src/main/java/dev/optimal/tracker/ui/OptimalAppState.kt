@@ -10,6 +10,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.optimal.tracker.navigation.DetailRoute
 import dev.optimal.tracker.navigation.TopLevelDestination
 import dev.optimal.tracker.navigation.TopLevelRoute
 import dev.optimal.tracker.navigation.topLevelDestinations
@@ -50,6 +51,10 @@ class OptimalAppState(internal val navController: NavHostController) {
             launchSingleTop = true
             restoreState = true
         }
+    }
+
+    fun navigateToDetail(detailRoute: DetailRoute) {
+        navController.navigate(detailRoute)
     }
 
     fun tryPopBack(): Boolean = navController.popBackStack()

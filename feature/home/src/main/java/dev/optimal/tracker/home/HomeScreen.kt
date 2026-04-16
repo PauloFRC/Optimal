@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.model.IconAction
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.core.ui.components.SearchTopAppBar
+import dev.optimal.tracker.core.utils.debouncedClicks
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.home.components.SessionHistoryCard
@@ -42,7 +43,7 @@ import dev.optimal.tracker.core.designsystem.R as CoreR
 
 @Composable
 fun HomeScreenRoute(
-    onStartWorkoutClick: () -> Unit,
+    onSessionClick: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,7 +91,7 @@ fun HomeScreenRoute(
 
         HomeScreen(
             sessions = filteredSessions,
-            onStartWorkoutClick = onStartWorkoutClick,
+            onSessionClick = onSessionClick,
             isSearchActive = isSearchActive,
             onClearSearchClick = {
                 searchQuery = ""
@@ -102,7 +103,7 @@ fun HomeScreenRoute(
 @Composable
 fun HomeScreen(
     sessions: List<WorkoutSessionModel>,
-    onStartWorkoutClick: () -> Unit,
+    onSessionClick: (Long) -> Unit,
     isSearchActive: Boolean = false,
     onClearSearchClick: () -> Unit = {}
 ) {
@@ -138,7 +139,9 @@ fun HomeScreen(
             )
             SessionHistoryCard(
                 session = session,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .debouncedClicks { onSessionClick(session.id) }
+                    .padding(bottom = 16.dp)
             )
         }
     }
@@ -192,7 +195,7 @@ fun HomeScreenPreview() {
     OptimalTheme {
         HomeScreen(
             sessions = HomeState().sessionHistory,
-            onStartWorkoutClick = {}
+            onSessionClick = {}
         )
     }
 }
@@ -203,7 +206,7 @@ fun HomeScreenEmptyPreview() {
     OptimalTheme {
         HomeScreen(
             sessions = listOf(),
-            onStartWorkoutClick = {}
+            onSessionClick = {}
         )
     }
 }
