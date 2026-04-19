@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -26,19 +30,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
+import dev.optimal.tracker.designsystem.theme.Dim
 import dev.optimal.tracker.designsystem.theme.Iron
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.model.workout.SessionExerciseModel
+import dev.optimal.tracker.model.workout.SessionSetModel
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
+import dev.optimal.tracker.model.workout.enums.SetType
 import dev.optimal.tracker.model.workout.getFormattedDuration
 import dev.optimal.tracker.model.workout.getFormattedStartDate
 import java.time.LocalDateTime
@@ -114,23 +124,50 @@ fun WorkoutSessionDetailContentScreen(
                     text = session?.name ?: "",
                     isLoading = isLoading,
                     style = MaterialTheme.typography.headlineLarge,
-                    shimmerWidth = 0.8f
+                    shimmerWidth = 300.dp
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Row {
                     ShimmerText(
                         text = session?.getFormattedStartDate() ?: "",
                         isLoading = isLoading,
                         style = MaterialTheme.typography.headlineSmall,
-                        shimmerWidth = 0.3f
+                        shimmerWidth = 70.dp
                     )
                     Text(" • ", style = MaterialTheme.typography.headlineSmall.copy(color = Iron))
                     ShimmerText(
                         text = session?.getFormattedDuration() ?: "",
                         isLoading = isLoading,
                         style = MaterialTheme.typography.headlineSmall,
-                        shimmerWidth = 0.3f
+                        shimmerWidth = 70.dp
                     )
+                }
+
+//                val numPRs = session?.getPersonalRecords()?.size
+                val numPRs = 10
+                if (!isLoading && numPRs != null && numPRs > 0) {
+                    Text(
+                        text = "$numPRs PRS",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .background(MaterialTheme.colorScheme.inverseSurface, RectangleShape)
+                            .padding(horizontal = 8.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(64.dp))
+
+                val exercises = session?.exercises
+                exercises?.let {
+                    LazyColumn() {
+                        items(exercises) { exercise ->
+                            SessionExerciseDetail(exercise, isLoading)
+                        }
+                    }
                 }
             }
         }
@@ -138,29 +175,75 @@ fun WorkoutSessionDetailContentScreen(
 }
 
 @Composable
+fun SessionExerciseDetail(
+    exercise: SessionExerciseModel?,
+    isLoading: Boolean
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        ShimmerText(
+            text = exercise?.name,
+            isLoading = isLoading,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        ShimmerText(
+            text = "muscle group", //TODO: add primary muscle group to model
+            isLoading = isLoading,
+            style = MaterialTheme.typography.headlineSmall,
+            color = Dim
+        )
+    }
+
+    exercise?.sets?.forEach { set ->
+        Row {
+            ShimmerText(
+                text = "SET ${set.order}",
+                isLoading = isLoading,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Dim,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+            ShimmerText(
+                text = "${set.weight} x ${set.reps}",
+                isLoading = isLoading,
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        }
+    }
+}
+
+@Composable
 fun ShimmerText(
-    text: String,
+    text: String?,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
-    shimmerWidth: Float = 1f, // fraction of max width
+    color: Color = Color.Unspecified,
+    shimmerWidth: Dp = 100.dp,
 ) {
     if (isLoading) {
         val brush = rememberShimmerBrush()
         val lineHeight = with(LocalDensity.current) { style.fontSize.toDp() * 1.4f }
         Box(
             modifier = modifier
-                .fillMaxWidth(shimmerWidth)
+                .width(shimmerWidth)
                 .height(lineHeight)
                 .clip(RoundedCornerShape(4.dp))
                 .background(brush)
         )
     } else {
-        Text(
-            text = text,
-            style = style,
-            modifier = modifier,
-        )
+        text?.let {
+            Text(
+                text = it,
+                style = style,
+                color = color,
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -197,7 +280,9 @@ fun WorkoutSessionDetailScreenPreview() {
         startDate = LocalDateTime.of(2026, 3, 19, 14, 30),
         endDate = LocalDateTime.of(2026, 3, 19, 17, 15),
         exercises = listOf(
-            SessionExerciseModel(1, "Bench Press", listOf()),
+            SessionExerciseModel(1, "Bench Press",
+                listOf(SessionSetModel(1, 1, SetType.WORKING, true, 10, 100.0, null))
+            ),
             SessionExerciseModel(2, "Squat", listOf()),
             SessionExerciseModel(3, "Deadlift", listOf())
         )
