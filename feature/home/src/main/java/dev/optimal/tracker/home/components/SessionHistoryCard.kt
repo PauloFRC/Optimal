@@ -37,7 +37,8 @@ import java.util.Locale
 @Composable
 fun SessionHistoryCard(
     session: WorkoutSessionModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     val formattedDuration = session.endDate?.let {
         OptimalDateTimeFormatter.formatDuration(session.startDate, it)
@@ -52,6 +53,7 @@ fun SessionHistoryCard(
             width = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant
         ),
+        onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(

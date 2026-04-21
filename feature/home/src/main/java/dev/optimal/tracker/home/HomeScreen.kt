@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.model.IconAction
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.core.ui.components.SearchTopAppBar
+import dev.optimal.tracker.core.utils.debounced
 import dev.optimal.tracker.core.utils.debouncedClicks
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
@@ -139,9 +140,8 @@ fun HomeScreen(
             )
             SessionHistoryCard(
                 session = session,
-                modifier = Modifier
-                    .debouncedClicks { onSessionClick(session.id) }
-                    .padding(bottom = 16.dp)
+                onClick = { onSessionClick(session.id) }.debounced(),
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     }
