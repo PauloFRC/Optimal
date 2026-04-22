@@ -12,7 +12,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.navigation.NavBackStackEntry
 
-const val NAV_ANIM_DURATION_MS = 5000
+const val NAV_ANIM_DURATION_MS = 150
 
 sealed interface OptimalTransition {
     val enter: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)
