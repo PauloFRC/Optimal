@@ -1,6 +1,12 @@
 package dev.optimal.tracker.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,11 +45,14 @@ import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.home.components.SessionHistoryCard
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
+import dev.optimal.tracker.navigation.transition.NAV_ANIM_DURATION_MS
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
 import dev.optimal.tracker.core.designsystem.R as CoreR
 
 @Composable
 fun HomeScreenRoute(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onSessionClick: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -93,6 +102,8 @@ fun HomeScreenRoute(
         HomeScreen(
             sessions = filteredSessions,
             onSessionClick = onSessionClick,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
             isSearchActive = isSearchActive,
             onClearSearchClick = {
                 searchQuery = ""
@@ -105,6 +116,8 @@ fun HomeScreenRoute(
 fun HomeScreen(
     sessions: List<WorkoutSessionModel>,
     onSessionClick: (Long) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     isSearchActive: Boolean = false,
     onClearSearchClick: () -> Unit = {}
 ) {
@@ -132,17 +145,28 @@ fun HomeScreen(
         modifier = Modifier.padding(horizontal = 16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
     ) {
-        itemsIndexed(sessions) { index, session ->
+        itemsIndexed(
+            items = sessions,
+            key = { _, session -> session.id }
+        ) { index, session ->
             MonthIndicator(
                 currentSession = session,
                 previousSession = sessions.getOrNull(index - 1),
                 sessions = sessions
             )
-            SessionHistoryCard(
-                session = session,
-                onClick = { onSessionClick(session.id) }.debounced(),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            with(sharedTransitionScope) {
+                SessionHistoryCard(
+                    session = session,
+                    onClick = { onSessionClick(session.id) }.debounced(),
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .sharedBounds(
+                            sharedContentState = rememberSharedContentState(key = "session_bounds_${session.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                        )
+                )
+            }
         }
     }
 }
@@ -193,10 +217,16 @@ fun MonthIndicator(
 @Composable
 fun HomeScreenPreview() {
     OptimalTheme {
-        HomeScreen(
-            sessions = HomeState().sessionHistory,
-            onSessionClick = {}
-        )
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                HomeScreen(
+                    sessions = HomeState().sessionHistory,
+                    onSessionClick = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this
+                )
+            }
+        }
     }
 }
 
@@ -204,9 +234,15 @@ fun HomeScreenPreview() {
 @Composable
 fun HomeScreenEmptyPreview() {
     OptimalTheme {
-        HomeScreen(
-            sessions = listOf(),
-            onSessionClick = {}
-        )
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                HomeScreen(
+                    sessions = listOf(),
+                    onSessionClick = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this
+                )
+            }
+        }
     }
 }

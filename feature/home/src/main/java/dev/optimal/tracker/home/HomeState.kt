@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 data class HomeState @RequiresApi(Build.VERSION_CODES.O) constructor(
 //    val sessionHistory: List<WorkoutSessionModel> = listOf()
-    val sessionHistory: List<WorkoutSessionModel> = List(30) {
+    val sessionHistory: List<WorkoutSessionModel> = List(1) {
         WorkoutSessionModel(
             id = 1,
             workoutModelId = 1,
@@ -21,6 +21,6 @@ data class HomeState @RequiresApi(Build.VERSION_CODES.O) constructor(
                 SessionExerciseModel(2, "Squat", listOf()),
                 SessionExerciseModel(3, "Deadlift", listOf())
             )
-        )  // ✅ Explicit return
+        )
     }
 )

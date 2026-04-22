@@ -1,5 +1,9 @@
 package dev.optimal.tracker.home.detail
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -51,10 +55,15 @@ import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.model.workout.enums.SetType
 import dev.optimal.tracker.model.workout.getFormattedDuration
 import dev.optimal.tracker.model.workout.getFormattedStartDate
+import dev.optimal.tracker.navigation.transition.NAV_ANIM_DURATION_MS
 import java.time.LocalDateTime
 
 @Composable
 fun WorkoutSessionDetailScreenRoute(
+    sessionId: Long,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onBackClick: () -> Unit,
     viewModel: WorkoutSessionDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +76,13 @@ fun WorkoutSessionDetailScreenRoute(
             )
         }
         else -> {
-            WorkoutSessionDetailContentScreen(uiState = uiState)
+            WorkoutSessionDetailContentScreen(
+                sessionId = sessionId,
+                uiState = uiState,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                onBackClick = onBackClick
+            )
         }
     }
 }
@@ -98,74 +113,96 @@ fun WorkoutSessionDetailErrorScreen(
 
 @Composable
 fun WorkoutSessionDetailContentScreen(
-    uiState: WorkoutSessionDetailState
+    sessionId: Long,
+    uiState: WorkoutSessionDetailState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onBackClick: () -> Unit
 ) {
     val isLoading = uiState is WorkoutSessionDetailState.Loading
     val session = (uiState as? WorkoutSessionDetailState.Success)?.session
 
-    Scaffold(
-        topBar = {
+    with(sharedTransitionScope) {
+        Column(
+            modifier = Modifier
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(
+                        key = "session_bounds_$sessionId"
+                    ),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(0.dp)),
+                )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
             OptimalTopAppBar(
                 title = stringResource(R.string.feature_home_session_detail_title),
                 showBackIcon = true,
-                onBackClick = {}
+                onBackClick = onBackClick
             )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+
+            Box(
+                modifier = Modifier
+//                    .padding(padding)
+                    .fillMaxSize()
             ) {
-                ShimmerText(
-                    text = session?.name ?: "",
-                    isLoading = isLoading,
-                    style = MaterialTheme.typography.headlineLarge,
-                    shimmerWidth = 300.dp
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     ShimmerText(
-                        text = session?.getFormattedStartDate() ?: "",
+                        text = session?.name ?: "",
                         isLoading = isLoading,
-                        style = MaterialTheme.typography.headlineSmall,
-                        shimmerWidth = 70.dp
+                        style = MaterialTheme.typography.headlineLarge,
+                        shimmerWidth = 300.dp
                     )
-                    Text(" • ", style = MaterialTheme.typography.headlineSmall.copy(color = Iron))
-                    ShimmerText(
-                        text = session?.getFormattedDuration() ?: "",
-                        isLoading = isLoading,
-                        style = MaterialTheme.typography.headlineSmall,
-                        shimmerWidth = 70.dp
-                    )
-                }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row {
+                        ShimmerText(
+                            text = session?.getFormattedStartDate() ?: "",
+                            isLoading = isLoading,
+                            style = MaterialTheme.typography.headlineSmall,
+                            shimmerWidth = 70.dp
+                        )
+                        Text(
+                            " • ",
+                            style = MaterialTheme.typography.headlineSmall.copy(color = Iron)
+                        )
+                        ShimmerText(
+                            text = session?.getFormattedDuration() ?: "",
+                            isLoading = isLoading,
+                            style = MaterialTheme.typography.headlineSmall,
+                            shimmerWidth = 70.dp
+                        )
+                    }
 
 //                val numPRs = session?.getPersonalRecords()?.size
-                val numPRs = 10
-                if (!isLoading && numPRs != null && numPRs > 0) {
-                    Text(
-                        text = "$numPRs PRS",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.inverseOnSurface,
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .background(MaterialTheme.colorScheme.inverseSurface, RectangleShape)
-                            .padding(horizontal = 8.dp)
-                    )
-                }
+                    val numPRs = 10
+                    if (!isLoading && numPRs != null && numPRs > 0) {
+                        Text(
+                            text = "$numPRs PRS",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.inverseSurface,
+                                    RectangleShape
+                                )
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(64.dp))
+                    Spacer(modifier = Modifier.height(64.dp))
 
-                val exercises = session?.exercises
-                exercises?.let {
-                    LazyColumn() {
-                        items(exercises) { exercise ->
-                            SessionExerciseDetail(exercise, isLoading)
+                    val exercises = session?.exercises
+                    exercises?.let {
+                        LazyColumn {
+                            items(exercises) { exercise ->
+                                SessionExerciseDetail(exercise, isLoading)
+                            }
                         }
                     }
                 }
@@ -288,7 +325,17 @@ fun WorkoutSessionDetailScreenPreview() {
         )
     )
     OptimalTheme {
-        WorkoutSessionDetailContentScreen(uiState = WorkoutSessionDetailState.Success(session = session))
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                WorkoutSessionDetailContentScreen(
+                    sessionId = 1L,
+                    uiState = WorkoutSessionDetailState.Success(session = session),
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onBackClick = {}
+                )
+            }
+        }
     }
 }
 
@@ -296,7 +343,17 @@ fun WorkoutSessionDetailScreenPreview() {
 @Composable
 fun WorkoutSessionDetailScreenLoadingPreview() {
     OptimalTheme {
-        WorkoutSessionDetailContentScreen(uiState = WorkoutSessionDetailState.Loading)
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                WorkoutSessionDetailContentScreen(
+                    sessionId = 1L,
+                    uiState = WorkoutSessionDetailState.Loading,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onBackClick = {}
+                )
+            }
+        }
     }
 }
 
@@ -304,6 +361,16 @@ fun WorkoutSessionDetailScreenLoadingPreview() {
 @Composable
 fun WorkoutSessionDetailScreenErrorPreview() {
     OptimalTheme {
-        WorkoutSessionDetailContentScreen(uiState = WorkoutSessionDetailState.Error(message = "Error"))
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                WorkoutSessionDetailContentScreen(
+                    sessionId = 1L,
+                    uiState = WorkoutSessionDetailState.Error("Error"),
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onBackClick = {}
+                )
+            }
+        }
     }
 }
