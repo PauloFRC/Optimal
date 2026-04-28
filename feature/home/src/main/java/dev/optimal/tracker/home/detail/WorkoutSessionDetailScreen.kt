@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,11 +18,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -127,16 +131,23 @@ fun WorkoutSessionDetailContentScreen(
                 onBackClick = onBackClick
             )
 
-            Box(
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                ),
                 modifier = Modifier
-//                    .padding(padding)
                     .fillMaxSize()
+                    .padding(16.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     ShimmerText(
-                        text = session?.name ?: "",
+                        text = session?.name?.uppercase() ?: "",
                         isLoading = isLoading,
                         style = MaterialTheme.typography.headlineLarge,
                         shimmerWidth = 300.dp
@@ -180,13 +191,16 @@ fun WorkoutSessionDetailContentScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(64.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     val exercises = session?.exercises
                     exercises?.let {
                         LazyColumn {
                             items(exercises) { exercise ->
-                                SessionExerciseDetail(exercise, isLoading)
+                                if (exercise.sets.isNotEmpty()) {
+                                    SessionExerciseDetail(exercise, isLoading)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
                             }
                         }
                     }
@@ -202,21 +216,24 @@ fun SessionExerciseDetail(
     isLoading: Boolean
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         ShimmerText(
-            text = exercise?.name,
+            text = exercise?.name?.uppercase(),
             isLoading = isLoading,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary
         )
 
         ShimmerText(
-            text = "muscle group", //TODO: add primary muscle group to model
+            text = "1 RM",
             isLoading = isLoading,
             style = MaterialTheme.typography.headlineSmall,
-            color = Dim
+            color = Dim,
+            modifier = Modifier.align(Alignment.Bottom)
         )
     }
 
@@ -225,16 +242,32 @@ fun SessionExerciseDetail(
             ShimmerText(
                 text = "SET ${set.order}",
                 isLoading = isLoading,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.labelSmall,
                 color = Dim,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 16.dp)
             )
             ShimmerText(
                 text = "${set.weight} x ${set.reps}",
                 isLoading = isLoading,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ShimmerText(
+                // TODO: add calculator for 1 rm
+                text = "120 kg",
+                isLoading = isLoading,
+                style = MaterialTheme.typography.labelMedium,
+                color = Dim
             )
         }
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
     }
 }
 
@@ -250,9 +283,19 @@ fun WorkoutSessionDetailScreenPreview() {
         endDate = LocalDateTime.of(2026, 3, 19, 17, 15),
         exercises = listOf(
             SessionExerciseModel(1, "Bench Press",
-                listOf(SessionSetModel(1, 1, SetType.WORKING, true, 10, 100.0, null))
+                listOf(
+                    SessionSetModel(1, 1, SetType.WORKING, true, 10, 100.0, null),
+                    SessionSetModel(2, 2, SetType.WORKING, true, 10, 100.0, null),
+                    SessionSetModel(3, 3, SetType.WORKING, true, 10, 100.0, null)
+                )
             ),
-            SessionExerciseModel(2, "Squat", listOf()),
+            SessionExerciseModel(2, "Squat",
+                listOf(
+                    SessionSetModel(1, 1, SetType.WORKING, true, 10, 100.0, null),
+                    SessionSetModel(2, 2, SetType.WORKING, true, 10, 100.0, null),
+                    SessionSetModel(3, 3, SetType.WORKING, true, 10, 100.0, null)
+                )
+            ),
             SessionExerciseModel(3, "Deadlift", listOf())
         )
     )
