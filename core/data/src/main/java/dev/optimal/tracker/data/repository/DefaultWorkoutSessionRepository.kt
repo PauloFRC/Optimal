@@ -23,6 +23,18 @@ internal class DefaultWorkoutSessionRepository @Inject constructor(
     override suspend fun getWorkoutSessionById(id: Long): WorkoutSessionModel? {
 //        return workoutSessionDao.getWorkoutSessionWithExercises(id)?.toModel()
         //TODO: remove
+        val sets = List(30) { i ->
+            val index = i + 1
+            SessionSetModel(
+                id = index.toLong(),
+                order = index,
+                type = SetType.WORKING,
+                isCompleted = false,
+                reps = 8 + (i % 3),
+                weight = 180.0 + (index * 5),
+                rir = null
+            )
+        }
         return WorkoutSessionModel(
             id = 1,
             workoutModelId = 1,
@@ -58,26 +70,7 @@ internal class DefaultWorkoutSessionRepository @Inject constructor(
                 SessionExerciseModel(
                     id = 1,
                     name = "Squats",
-                    sets = listOf(
-                        SessionSetModel(
-                            id = 1,
-                            order = 1,
-                            type = SetType.WORKING,
-                            isCompleted = true,
-                            reps = 8,
-                            weight = 200.0,
-                            rir = null
-                        ),
-                        SessionSetModel(
-                            id = 1,
-                            order = 1,
-                            type = SetType.WORKING,
-                            isCompleted = true,
-                            reps = 8,
-                            weight = 200.0,
-                            rir = null
-                        ),
-                    )
+                    sets = sets
                 )
             )
         )

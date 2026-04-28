@@ -4,24 +4,30 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.optimal.tracker.core.ui.components.AffirmativeButton
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.core.ui.components.ShimmerText
 import dev.optimal.tracker.designsystem.theme.Dim
@@ -111,97 +118,121 @@ fun WorkoutSessionDetailContentScreen(
     val isLoading = uiState is WorkoutSessionDetailState.Loading
     val session = (uiState as? WorkoutSessionDetailState.Success)?.session
 
+    val systemBarInsets = WindowInsets.systemBars.asPaddingValues()
+
     with(sharedTransitionScope) {
-        Column(
+        Box(
             modifier = Modifier
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(
-                        key = "session_bounds_$sessionId"
-                    ),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(0.dp)),
-                )
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(
+                    top = systemBarInsets.calculateTopPadding(),
+                    bottom = systemBarInsets.calculateBottomPadding()
+                )
         ) {
-            OptimalTopAppBar(
-                title = stringResource(R.string.feature_home_session_detail_title),
-                showBackIcon = true,
-                onBackClick = onBackClick
-            )
-
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
-                ),
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    ShimmerText(
-                        text = session?.name?.uppercase() ?: "",
-                        isLoading = isLoading,
-                        style = MaterialTheme.typography.headlineLarge,
-                        shimmerWidth = 300.dp
+                    .sharedBounds(
+                        sharedContentState = rememberSharedContentState(
+                            key = "session_bounds_$sessionId"
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                        clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(0.dp)),
                     )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row {
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.surface,)
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
                         ShimmerText(
-                            text = session?.getFormattedStartDate() ?: "",
+                            text = session?.name?.uppercase() ?: "",
                             isLoading = isLoading,
-                            style = MaterialTheme.typography.headlineSmall,
-                            shimmerWidth = 70.dp
+                            style = MaterialTheme.typography.headlineMedium,
+                            shimmerWidth = 300.dp
                         )
-                        Text(
-                            " • ",
-                            style = MaterialTheme.typography.headlineSmall.copy(color = Iron)
-                        )
-                        ShimmerText(
-                            text = session?.getFormattedDuration() ?: "",
-                            isLoading = isLoading,
-                            style = MaterialTheme.typography.headlineSmall,
-                            shimmerWidth = 70.dp
-                        )
-                    }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row {
+                            ShimmerText(
+                                text = session?.getFormattedStartDate() ?: "",
+                                isLoading = isLoading,
+                                style = MaterialTheme.typography.headlineSmall,
+                                shimmerWidth = 70.dp
+                            )
+                            Text(
+                                " • ",
+                                style = MaterialTheme.typography.headlineSmall.copy(color = Iron)
+                            )
+                            ShimmerText(
+                                text = session?.getFormattedDuration() ?: "",
+                                isLoading = isLoading,
+                                style = MaterialTheme.typography.headlineSmall,
+                                shimmerWidth = 70.dp
+                            )
+                        }
 
 //                val numPRs = session?.getPersonalRecords()?.size
-                    val numPRs = 10
-                    if (!isLoading && numPRs != null && numPRs > 0) {
-                        Text(
-                            text = "$numPRs PRS",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
-                            modifier = Modifier
-                                .padding(vertical = 8.dp)
-                                .background(
-                                    MaterialTheme.colorScheme.inverseSurface,
-                                    RectangleShape
-                                )
-                                .padding(horizontal = 8.dp)
-                        )
-                    }
+                        val numPRs = 10
+                        if (!isLoading && numPRs != null && numPRs > 0) {
+                            Text(
+                                text = "$numPRs PRS",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.inverseOnSurface,
+                                modifier = Modifier
+                                    .padding(vertical = 8.dp)
+                                    .background(
+                                        MaterialTheme.colorScheme.inverseSurface,
+                                        RectangleShape
+                                    )
+                                    .padding(horizontal = 8.dp)
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    val exercises = session?.exercises
-                    exercises?.let {
-                        LazyColumn {
-                            items(exercises) { exercise ->
-                                if (exercise.sets.isNotEmpty()) {
-                                    SessionExerciseDetail(exercise, isLoading)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                        val exercises = session?.exercises
+                        exercises?.let {
+                            LazyColumn(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                items(exercises) { exercise ->
+                                    if (exercise.sets.isNotEmpty()) {
+                                        SessionExerciseDetail(exercise, isLoading)
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
                                 }
                             }
+                        }
+                        with(animatedVisibilityScope) {
+                            AffirmativeButton(
+                                text = "Start session with template",
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(start = 8.dp, end = 8.dp, top = 16.dp)
+                                    .fillMaxWidth()
+                                    .animateEnterExit(
+                                        enter = fadeIn(
+                                            animationSpec = tween(durationMillis = 600, delayMillis = 300)
+                                        ) + slideInVertically(
+                                            initialOffsetY = { it / 2 },
+                                            animationSpec = tween(durationMillis = 600, delayMillis = 300)
+                                        ),
+                                        exit = fadeOut(
+                                            animationSpec = tween(durationMillis = 150)
+                                        ) + slideOutVertically(
+                                            targetOffsetY = { it / 2 },
+                                            animationSpec = tween(durationMillis = 150)
+                                        )
+                                    )
+                            )
                         }
                     }
                 }
@@ -238,9 +269,11 @@ fun SessionExerciseDetail(
     }
 
     exercise?.sets?.forEach { set ->
-        Row {
+        Row(
+            modifier = Modifier.padding(vertical = 2.dp)
+        ) {
             ShimmerText(
-                text = "SET ${set.order}",
+                text = "${set.order}",
                 isLoading = isLoading,
                 style = MaterialTheme.typography.labelSmall,
                 color = Dim,
@@ -263,12 +296,12 @@ fun SessionExerciseDetail(
                 color = Dim
             )
         }
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
     }
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant,
+        modifier = Modifier.padding(vertical = 8.dp)
+    )
 }
 
 @Preview
