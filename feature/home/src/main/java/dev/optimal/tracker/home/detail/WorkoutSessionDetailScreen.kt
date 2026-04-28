@@ -4,12 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,31 +14,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
+import dev.optimal.tracker.core.ui.components.ShimmerText
 import dev.optimal.tracker.designsystem.theme.Dim
 import dev.optimal.tracker.designsystem.theme.Iron
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
@@ -55,7 +41,6 @@ import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.model.workout.enums.SetType
 import dev.optimal.tracker.model.workout.getFormattedDuration
 import dev.optimal.tracker.model.workout.getFormattedStartDate
-import dev.optimal.tracker.navigation.transition.NAV_ANIM_DURATION_MS
 import java.time.LocalDateTime
 
 @Composable
@@ -251,59 +236,6 @@ fun SessionExerciseDetail(
             )
         }
     }
-}
-
-@Composable
-fun ShimmerText(
-    text: String?,
-    isLoading: Boolean,
-    modifier: Modifier = Modifier,
-    style: TextStyle = LocalTextStyle.current,
-    color: Color = Color.Unspecified,
-    shimmerWidth: Dp = 100.dp,
-) {
-    if (isLoading) {
-        val brush = rememberShimmerBrush()
-        val lineHeight = with(LocalDensity.current) { style.fontSize.toDp() * 1.4f }
-        Box(
-            modifier = modifier
-                .width(shimmerWidth)
-                .height(lineHeight)
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush)
-        )
-    } else {
-        text?.let {
-            Text(
-                text = it,
-                style = style,
-                color = color,
-                modifier = modifier,
-            )
-        }
-    }
-}
-
-@Composable
-fun rememberShimmerBrush(): Brush {
-    val transition = rememberInfiniteTransition(label = "shimmer")
-    val translateAnim by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "shimmer_translate"
-    )
-    return Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-            MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-        ),
-        start = Offset.Zero,
-        end = Offset(translateAnim, translateAnim)
-    )
 }
 
 @Preview
