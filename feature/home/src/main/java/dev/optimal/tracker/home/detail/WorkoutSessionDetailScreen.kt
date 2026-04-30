@@ -25,7 +25,12 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -148,16 +153,21 @@ fun WorkoutSessionDetailContentScreen(
                         .background(color = MaterialTheme.colorScheme.surface,)
                         .fillMaxSize()
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        ShimmerText(
-                            text = session?.name?.uppercase() ?: "",
-                            isLoading = isLoading,
-                            style = MaterialTheme.typography.headlineMedium,
-                            shimmerWidth = 300.dp
-                        )
+                    WorkoutSessionDetailTopBar(
+                        title = session?.name,
+                        isLoading = isLoading,
+                        onBackClick = onBackClick,
+                        onMoreClick = {} //TODO: implement
+                    )
 
+                    Column(
+                        modifier = Modifier.padding(
+                            top = 32.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        )
+                    ) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Row {
@@ -237,6 +247,44 @@ fun WorkoutSessionDetailContentScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun WorkoutSessionDetailTopBar(
+    title: String?,
+    isLoading: Boolean,
+    onBackClick: () -> Unit,
+    onMoreClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBackClick) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = "Close drawer",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        ShimmerText(
+            text = title?.uppercase() ?: "",
+            isLoading = isLoading,
+            style = MaterialTheme.typography.headlineMedium,
+            shimmerWidth = 300.dp
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        IconButton(onClick = onMoreClick) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More options",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
