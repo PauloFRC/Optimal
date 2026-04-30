@@ -1,7 +1,9 @@
 package dev.optimal.tracker.core.utils
 
 import android.os.SystemClock
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -19,7 +21,13 @@ fun Modifier.debouncedClicks(
 ): Modifier {
     return this.composed {
         val clickable = debounced(debounceTime = debounceTime, onClick = onClick)
-        this.clickable(enabled = enabled) { clickable() }
+        val interactionSource = remember { MutableInteractionSource() }
+        val indication = LocalIndication.current
+        this.clickable(
+            enabled = enabled,
+            interactionSource = interactionSource,
+            indication = indication,               // 👈 pass it explicitly
+        ) { clickable() }
     }
 }
 

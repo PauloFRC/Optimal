@@ -223,7 +223,7 @@ fun WorkoutSessionDetailContentScreen(
                         }
                         with(animatedVisibilityScope) {
                             AffirmativeButton(
-                                text = "Start session with template",
+                                text = stringResource(R.string.feature_home_session_detail_start_session),
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(start = 8.dp, end = 8.dp, top = 16.dp)
