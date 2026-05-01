@@ -8,7 +8,7 @@ import dev.optimal.tracker.database.dao.WorkoutTemplateDao
 import dev.optimal.tracker.database.dao.WorkoutSessionDao
 import dev.optimal.tracker.database.model.workout.ExerciseEntity
 import dev.optimal.tracker.database.model.workout.ExerciseSecondaryMuscleGroupCrossRef
-import dev.optimal.tracker.database.model.workout.ModelExerciseEntity
+import dev.optimal.tracker.database.model.workout.TemplateExerciseEntity
 import dev.optimal.tracker.database.model.workout.TemplateSetEntity
 import dev.optimal.tracker.database.model.workout.MuscleGroupEntity
 import dev.optimal.tracker.database.model.workout.SessionExerciseEntity
@@ -22,7 +22,7 @@ import dev.optimal.tracker.database.model.workout.converters.SetTypeConverter
 @Database(
     entities = [
         ExerciseEntity::class,
-        ModelExerciseEntity::class,
+        TemplateExerciseEntity::class,
         SessionExerciseEntity::class,
         ExerciseSecondaryMuscleGroupCrossRef::class,
         MuscleGroupEntity::class,

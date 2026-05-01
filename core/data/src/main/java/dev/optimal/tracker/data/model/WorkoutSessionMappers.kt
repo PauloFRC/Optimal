@@ -9,7 +9,7 @@ import dev.optimal.tracker.model.workout.WorkoutSessionModel
 
 fun WorkoutSessionWithExercises.toModel() = WorkoutSessionModel(
     id = workoutSession.workoutSessionId,
-    workoutModelId = workoutSession.workoutModelId,
+    workoutModelId = workoutSession.workoutTemplateId,
     name = workoutSession.name,
     isCompleted = workoutSession.completed,
     startDate = workoutSession.startDate,

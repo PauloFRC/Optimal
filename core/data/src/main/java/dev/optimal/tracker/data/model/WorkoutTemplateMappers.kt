@@ -8,7 +8,7 @@ import dev.optimal.tracker.model.workout.TemplateSetModel
 import dev.optimal.tracker.model.workout.WorkoutTemplateModel
 
 fun WorkoutTemplateWithExercises.toModel() = WorkoutTemplateModel(
-    id = workoutTemplateEntity.workoutModelId,
+    id = workoutTemplateEntity.workoutTemplateId,
     name = workoutTemplateEntity.name,
     exercises = templateExercisesWithSets.map { it.toModel() }
 )

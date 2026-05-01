@@ -26,7 +26,7 @@ interface WorkoutSessionDao {
     fun getAllWorkoutSessionsWithExercises(): Flow<List<WorkoutSessionWithExercises>>
 
     @Transaction
-    @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutModelId = :workoutModelId ORDER BY startDate DESC")
+    @Query("SELECT * FROM WorkoutSessionEntity WHERE workoutTemplateId = :workoutModelId ORDER BY startDate DESC")
     suspend fun getWorkoutSessionsByModelId(workoutModelId: Long): List<WorkoutSessionWithExercises>
 
     @Transaction

@@ -11,8 +11,8 @@ import androidx.room.Relation
     foreignKeys = [
         ForeignKey(
             entity = WorkoutTemplateEntity::class,
-            parentColumns = ["workoutModelId"],
-            childColumns = ["workoutModelId"],
+            parentColumns = ["workoutTemplateId"],
+            childColumns = ["workoutTemplateId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
@@ -22,17 +22,17 @@ import androidx.room.Relation
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("workoutModelId"), Index("exerciseId")]
+    indices = [Index("workoutTemplateId"), Index("exerciseId")]
 )
-data class ModelExerciseEntity(
-    @PrimaryKey(autoGenerate = true) val modelExerciseId: Long = 0,
-    val workoutModelId: Long,
+data class TemplateExerciseEntity(
+    @PrimaryKey(autoGenerate = true) val templateExerciseId: Long = 0,
+    val workoutTemplateId: Long,
     val exerciseId: Long,
     val order: Int
 )
 
 data class TemplateExerciseWithSets (
-    @Embedded val modelExerciseEntity: ModelExerciseEntity,
+    @Embedded val templateExerciseEntity: TemplateExerciseEntity,
     @Relation(
         parentColumn = "exerciseId",
         entityColumn = "exerciseId"
@@ -40,8 +40,8 @@ data class TemplateExerciseWithSets (
     val exerciseEntity: ExerciseEntity,
     @Relation(
         entity = TemplateSetEntity::class,
-        parentColumn = "modelExerciseId",
-        entityColumn = "modelExerciseId"
+        parentColumn = "templateExerciseId",
+        entityColumn = "templateExerciseId"
     )
     val templateSetEntities: List<TemplateSetEntity>
 )

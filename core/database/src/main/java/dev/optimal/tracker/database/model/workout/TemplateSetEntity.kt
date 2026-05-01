@@ -9,13 +9,13 @@ import dev.optimal.tracker.model.workout.enums.SetType
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = ModelExerciseEntity::class,
-            parentColumns = ["modelExerciseId"],
-            childColumns = ["modelExerciseId"],
+            entity = TemplateExerciseEntity::class,
+            parentColumns = ["templateExerciseId"],
+            childColumns = ["templateExerciseId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("modelExerciseId")]
+    indices = [Index("templateExerciseId")]
 )
 data class TemplateSetEntity (
     @PrimaryKey(autoGenerate = true) val templateSetId: Long = 0,

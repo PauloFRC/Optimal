@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import dev.optimal.tracker.database.model.workout.ModelExerciseEntity
+import dev.optimal.tracker.database.model.workout.TemplateExerciseEntity
 import dev.optimal.tracker.database.model.workout.TemplateSetEntity
 import dev.optimal.tracker.database.model.workout.WorkoutTemplateEntity
 import dev.optimal.tracker.database.model.workout.WorkoutTemplateWithExercises
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutTemplateDao {
 
     @Transaction
-    @Query("SELECT * FROM WorkoutTemplateEntity WHERE workoutModelId = :workoutModelId")
+    @Query("SELECT * FROM WorkoutTemplateEntity WHERE workoutTemplateId = :workoutModelId")
     fun getWorkoutTemplateWithExercises(workoutModelId: Long): WorkoutTemplateWithExercises?
 
     @Transaction
@@ -35,10 +35,10 @@ interface WorkoutTemplateDao {
     @Update
     suspend fun updateWorkoutTemplate(workoutTemplateEntity: WorkoutTemplateEntity)
 
-    @Query("DELETE FROM WorkoutTemplateEntity WHERE workoutModelId = :workoutModelId")
+    @Query("DELETE FROM WorkoutTemplateEntity WHERE workoutTemplateId = :workoutModelId")
     suspend fun deleteWorkoutTemplateById(workoutModelId: Long)
 
-    @Query("DELETE FROM ModelExerciseEntity WHERE workoutModelId = :workoutModelId")
+    @Query("DELETE FROM TemplateExerciseEntity WHERE workoutTemplateId = :workoutModelId")
     suspend fun deleteTemplateExercisesByWorkoutId(workoutModelId: Long)
 
     @Transaction
@@ -50,13 +50,13 @@ interface WorkoutTemplateDao {
 
     @Transaction
     suspend fun updateCompleteWorkoutTemplate(workoutModelId: Long, input: WorkoutModelInput) {
-        updateWorkoutTemplate(WorkoutTemplateEntity(workoutModelId = workoutModelId, name = input.name))
+        updateWorkoutTemplate(WorkoutTemplateEntity(workoutTemplateId = workoutModelId, name = input.name))
         deleteTemplateExercisesByWorkoutId(workoutModelId)
         insertExercisesWithSets(workoutModelId, input.exercises)
     }
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertTemplateExercise(modelExerciseEntity: ModelExerciseEntity): Long
+    suspend fun insertTemplateExercise(templateExerciseEntity: TemplateExerciseEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertTemplateSet(templateSetEntity: TemplateSetEntity): Long
@@ -66,9 +66,9 @@ interface WorkoutTemplateDao {
         exercises: List<ModelExerciseInput>
     ) {
         exercises.forEach { exerciseInput ->
-            val modelExerciseEntityId = insertTemplateExercise(
-                ModelExerciseEntity(
-                    workoutModelId = workoutModelId,
+            val templateExerciseEntityId = insertTemplateExercise(
+                TemplateExerciseEntity(
+                    workoutTemplateId = workoutModelId,
                     exerciseId = exerciseInput.exerciseId,
                     order = exerciseInput.order
                 )
@@ -76,7 +76,7 @@ interface WorkoutTemplateDao {
             exerciseInput.sets.forEach { setInput ->
                 insertTemplateSet(
                     TemplateSetEntity(
-                        templateExerciseId = modelExerciseEntityId,
+                        templateExerciseId = templateExerciseEntityId,
                         order = setInput.order,
                         type = setInput.type
                     )

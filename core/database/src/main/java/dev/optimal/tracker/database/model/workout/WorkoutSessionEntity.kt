@@ -12,16 +12,16 @@ import java.time.LocalDateTime
     foreignKeys = [
         ForeignKey(
             entity = WorkoutTemplateEntity::class,
-            parentColumns = ["workoutModelId"],
-            childColumns = ["workoutModelId"],
+            parentColumns = ["workoutTemplateId"],
+            childColumns = ["workoutTemplateId"],
             onDelete = ForeignKey.SET_NULL
         )
     ],
-    indices = [Index("workoutModelId")]
+    indices = [Index("workoutTemplateId")]
 )
 data class WorkoutSessionEntity(
     @PrimaryKey(autoGenerate = true) val workoutSessionId: Long = 0,
-    val workoutModelId: Long?,
+    val workoutTemplateId: Long?,
     val name: String,
     val completed: Boolean = false,
     val startDate: LocalDateTime,

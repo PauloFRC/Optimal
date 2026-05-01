@@ -1,6 +1,6 @@
 package dev.optimal.tracker.database.dao
 
-import dev.optimal.tracker.database.model.workout.ModelExerciseEntity
+import dev.optimal.tracker.database.model.workout.TemplateExerciseEntity
 import dev.optimal.tracker.database.model.workout.TemplateSetEntity
 import dev.optimal.tracker.database.model.workout.WorkoutTemplateEntity
 import dev.optimal.tracker.model.workout.enums.SetType
@@ -21,8 +21,8 @@ internal class WorkoutTemplateDaoTest : DatabaseTest() {
         )
 
         val modelExerciseId = workoutTemplateDao.insertTemplateExercise(
-            ModelExerciseEntity(
-                workoutModelId = modelId,
+            TemplateExerciseEntity(
+                workoutTemplateId = modelId,
                 exerciseId = exerciseId,
                 order = 1
             )

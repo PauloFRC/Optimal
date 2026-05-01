@@ -20,6 +20,11 @@ import dev.optimal.tracker.core.ui.components.DarkButton
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.workout.R
+import dev.optimal.tracker.model.workout.TemplateExerciseModel
+import dev.optimal.tracker.model.workout.TemplateSetModel
+import dev.optimal.tracker.model.workout.WorkoutTemplateModel
+import dev.optimal.tracker.model.workout.enums.SetType
+import dev.optimal.tracker.workout.components.WorkoutTemplateCard
 
 @Composable
 fun WorkoutScreenRoute(
@@ -79,6 +84,16 @@ fun WorkoutScreen(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        uiState.workoutTemplates.forEach {
+            WorkoutTemplateCard(
+                workoutTemplate = it,
+                onClick = onNavigateToDetail
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
     }
 }
 
@@ -87,7 +102,58 @@ fun WorkoutScreen(
 fun WorkoutScreenPreview() {
     OptimalTheme {
         WorkoutScreen(
-            uiState = WorkoutState(),
+            uiState = WorkoutState(
+                workoutTemplates = listOf(
+                    WorkoutTemplateModel(
+                        id = 1,
+                        name = "Test Workout",
+                        exercises = listOf(
+                            TemplateExerciseModel(
+                                id = 1,
+                                name = "Bench Press",
+                                sets = listOf(
+                                    TemplateSetModel(1, 1, SetType.WORKING),
+                                    TemplateSetModel(2, 2, SetType.WORKING),
+                                    TemplateSetModel(3, 3, SetType.WORKING),
+                                )
+                            ),
+                            TemplateExerciseModel(
+                                id = 2,
+                                name = "Squat",
+                                sets = listOf(
+                                    TemplateSetModel(1, 1, SetType.WORKING),
+                                    TemplateSetModel(2, 2, SetType.WORKING),
+                                    TemplateSetModel(3, 3, SetType.WORKING),
+                                )
+                            )
+                        )
+                    ),
+                    WorkoutTemplateModel(
+                        id = 2,
+                        name = "Test Workout 2",
+                        exercises = listOf(
+                            TemplateExerciseModel(
+                                id = 1,
+                                name = "Bench Press",
+                                sets = listOf(
+                                    TemplateSetModel(1, 1, SetType.WORKING),
+                                    TemplateSetModel(2, 2, SetType.WORKING),
+                                    TemplateSetModel(3, 3, SetType.WORKING),
+                                )
+                            ),
+                            TemplateExerciseModel(
+                                id = 2,
+                                name = "Squat",
+                                sets = listOf(
+                                    TemplateSetModel(1, 1, SetType.WORKING),
+                                    TemplateSetModel(2, 2, SetType.WORKING),
+                                    TemplateSetModel(3, 3, SetType.WORKING),
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
             onNavigateToSession = {},
             onNavigateToDetail = {},
             onNavigateBack = {}
