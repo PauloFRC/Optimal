@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = WorkoutModelEntity::class,
+            entity = WorkoutTemplateEntity::class,
             parentColumns = ["workoutModelId"],
             childColumns = ["workoutModelId"],
             onDelete = ForeignKey.SET_NULL

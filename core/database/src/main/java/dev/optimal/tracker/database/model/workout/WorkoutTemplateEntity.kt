@@ -6,17 +6,17 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity
-data class WorkoutModelEntity(
+data class WorkoutTemplateEntity(
     @PrimaryKey(autoGenerate = true) val workoutModelId: Long = 0,
     val name: String,
 )
 
-data class WorkoutModelWithExercises(
-    @Embedded val workoutModelEntity: WorkoutModelEntity,
+data class WorkoutTemplateWithExercises(
+    @Embedded val workoutTemplateEntity: WorkoutTemplateEntity,
     @Relation(
         entity = ModelExerciseEntity::class,
         parentColumn = "workoutModelId",
         entityColumn = "workoutModelId",
     )
-    val modelExercisesWithSets: List<ModelExerciseWithSets>
+    val templateExercisesWithSets: List<TemplateExerciseWithSets>
 )

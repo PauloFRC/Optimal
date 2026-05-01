@@ -10,7 +10,7 @@ import androidx.room.Relation
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = WorkoutModelEntity::class,
+            entity = WorkoutTemplateEntity::class,
             parentColumns = ["workoutModelId"],
             childColumns = ["workoutModelId"],
             onDelete = ForeignKey.CASCADE
@@ -31,7 +31,7 @@ data class ModelExerciseEntity(
     val order: Int
 )
 
-data class ModelExerciseWithSets (
+data class TemplateExerciseWithSets (
     @Embedded val modelExerciseEntity: ModelExerciseEntity,
     @Relation(
         parentColumn = "exerciseId",
@@ -39,9 +39,9 @@ data class ModelExerciseWithSets (
     )
     val exerciseEntity: ExerciseEntity,
     @Relation(
-        entity = ModelSetEntity::class,
+        entity = TemplateSetEntity::class,
         parentColumn = "modelExerciseId",
         entityColumn = "modelExerciseId"
     )
-    val modelSetEntities: List<ModelSetEntity>
+    val templateSetEntities: List<TemplateSetEntity>
 )

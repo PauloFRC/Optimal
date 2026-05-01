@@ -6,7 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.optimal.tracker.database.AppDatabase
 import dev.optimal.tracker.database.dao.ExerciseDao
-import dev.optimal.tracker.database.dao.WorkoutModelDao
+import dev.optimal.tracker.database.dao.WorkoutTemplateDao
 import dev.optimal.tracker.database.dao.WorkoutSessionDao
 
 @Module
@@ -20,7 +20,7 @@ internal object DaosModule {
     @Provides
     fun providesWorkoutModelDao(
         database: AppDatabase,
-    ): WorkoutModelDao = database.workoutModelDao()
+    ): WorkoutTemplateDao = database.workoutModelDao()
 
     @Provides
     fun providesWorkoutSessionDao(

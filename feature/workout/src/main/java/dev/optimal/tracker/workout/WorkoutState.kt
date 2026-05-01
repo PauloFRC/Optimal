@@ -1,7 +1,7 @@
 package dev.optimal.tracker.workout
 
-import dev.optimal.tracker.model.workout.WorkoutSessionTemplate
+import dev.optimal.tracker.model.workout.WorkoutTemplateModel
 
 data class WorkoutState(
-    val sessionTemplates: List<WorkoutSessionTemplate> = listOf()
+    val sessionTemplates: List<WorkoutTemplateModel> = listOf()
 )

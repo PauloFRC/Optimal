@@ -11,7 +11,7 @@ internal abstract class DatabaseTest {
 
     private lateinit var db: AppDatabase
     protected lateinit var exerciseDao: ExerciseDao
-    protected lateinit var workoutModelDao: WorkoutModelDao
+    protected lateinit var workoutTemplateDao: WorkoutTemplateDao
     protected lateinit var workoutSessionDao: WorkoutSessionDao
 
     @Before
@@ -24,7 +24,7 @@ internal abstract class DatabaseTest {
             ).build()
         }
         exerciseDao = db.exerciseDao()
-        workoutModelDao = db.workoutModelDao()
+        workoutTemplateDao = db.workoutModelDao()
         workoutSessionDao = db.workoutSessionDao()
     }
 

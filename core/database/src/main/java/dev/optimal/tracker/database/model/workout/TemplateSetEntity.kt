@@ -17,9 +17,9 @@ import dev.optimal.tracker.model.workout.enums.SetType
     ],
     indices = [Index("modelExerciseId")]
 )
-data class ModelSetEntity (
-    @PrimaryKey(autoGenerate = true) val modelSetId: Long = 0,
-    val modelExerciseId: Long,
+data class TemplateSetEntity (
+    @PrimaryKey(autoGenerate = true) val templateSetId: Long = 0,
+    val templateExerciseId: Long,
     val order: Int,
     val type: SetType
 )
