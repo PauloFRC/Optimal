@@ -1,5 +1,6 @@
 package dev.optimal.tracker.workout
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +36,7 @@ fun WorkoutScreenRoute(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         OptimalTopAppBar(
             title = stringResource(R.string.feature_workout_title)
         )
