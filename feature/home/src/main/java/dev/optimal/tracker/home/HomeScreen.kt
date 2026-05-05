@@ -5,8 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,12 +38,10 @@ import dev.optimal.tracker.core.model.IconAction
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.core.ui.components.SearchTopAppBar
 import dev.optimal.tracker.core.utils.debounced
-import dev.optimal.tracker.core.utils.debouncedClicks
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.home.components.SessionHistoryCard
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
-import dev.optimal.tracker.navigation.transition.NAV_ANIM_DURATION_MS
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
 import dev.optimal.tracker.core.designsystem.R as CoreR
 
@@ -163,7 +159,7 @@ fun HomeScreen(
                         .sharedBounds(
                             sharedContentState = rememberSharedContentState(key = "session_bounds_${session.id}"),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
                         )
                 )
             }
