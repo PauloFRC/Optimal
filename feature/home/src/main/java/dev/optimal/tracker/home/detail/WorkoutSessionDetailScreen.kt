@@ -120,6 +120,7 @@ fun WorkoutSessionDetailContentScreen(
 ) {
     val isLoading = uiState is WorkoutSessionDetailState.Loading
     val session = (uiState as? WorkoutSessionDetailState.Success)?.session
+    val exercises = session?.exercises
 
     with(sharedTransitionScope) {
         Box(
@@ -143,22 +144,20 @@ fun WorkoutSessionDetailContentScreen(
                         )
                         .systemBarsPadding()
                 ) {
-                    WorkoutSessionDetailTopBar(
-                        title = session?.name,
-                        isLoading = isLoading,
-                        onBackClick = onBackClick,
-                        onMoreClick = {} //TODO: implement
-                    )
-
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        val exercises = session?.exercises
-                        exercises?.let {
-                            LazyColumn(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                item {
+                    Column {
+                        LazyColumn(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            item {
+                                WorkoutSessionDetailTopBar(
+                                    title = session?.name,
+                                    isLoading = isLoading,
+                                    onBackClick = onBackClick,
+                                    onMoreClick = {}
+                                )
+                            }
+                            item {
+                                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                                     Row {
                                         ShimmerText(
                                             text = session?.getFormattedStartDate() ?: "",
@@ -177,28 +176,28 @@ fun WorkoutSessionDetailContentScreen(
                                             shimmerWidth = 70.dp
                                         )
                                     }
-//                                    val numPRs = session?.getPersonalRecords()?.size
                                     val numPRs = 10
-                                    if (!isLoading && numPRs != null && numPRs > 0) {
+                                    if (!isLoading && numPRs > 0) {
                                         Text(
                                             text = "$numPRs PRS",
                                             style = MaterialTheme.typography.headlineSmall,
                                             color = MaterialTheme.colorScheme.inverseOnSurface,
                                             modifier = Modifier
                                                 .padding(vertical = 8.dp)
-                                                .background(
-                                                    MaterialTheme.colorScheme.inverseSurface,
-                                                    RectangleShape
-                                                )
+                                                .background(MaterialTheme.colorScheme.inverseSurface, RectangleShape)
                                                 .padding(horizontal = 8.dp)
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
-
+                            }
+                            exercises?.let {
                                 items(exercises) { exercise ->
                                     if (exercise.sets.isNotEmpty()) {
-                                        SessionExerciseDetail(exercise, isLoading)
+                                        // ✅ Each exercise item also gets its own horizontal padding
+                                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                            SessionExerciseDetail(exercise, isLoading)
+                                        }
                                         Spacer(modifier = Modifier.height(8.dp))
                                     }
                                 }
@@ -208,7 +207,7 @@ fun WorkoutSessionDetailContentScreen(
                             text = stringResource(R.string.feature_home_session_detail_start_session),
                             onClick = {},
                             modifier = Modifier
-                                .padding(start = 8.dp, end = 8.dp, top = 16.dp)
+                                .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
                                 .fillMaxWidth()
                                 .animateEnterExit(
                                     enter = fadeIn(
