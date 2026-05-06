@@ -36,7 +36,7 @@ fun AffirmativeButton(
                 text = text.uppercase(),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             )
         }
     }
@@ -66,7 +66,7 @@ fun DarkButton(
                 text = text.uppercase(),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             )
         }
     }

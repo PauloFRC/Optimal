@@ -61,13 +61,22 @@ fun AppNavHost(
                 )
 
                 workoutNavGraph(
-                    onNavigateToSession = {
-                        //appState.navigateToTopLevel(TopLevelRoute.Workout)
+                    onNavigateToCreateTemplate = {
+                        appState.navigateToDetail(DetailRoute.WorkoutTemplateCreation)
                     },
                     onNavigateToDetail = {
                         //appState.navigateToTopLevel(TopLevelRoute.Workout)
                     },
-                    onNavigateBack = appState::tryPopBack
+                    onNavigateBack = appState::tryPopBack,
+                    onNavigateToExerciseSelection = {
+                        appState.navigateToDetail(DetailRoute.ExerciseSelection)
+                    },
+                    onSelectExercise = { exerciseId ->
+                        appState.navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("selected_exercise_id", exerciseId)
+                        appState.tryPopBack()
+                    }
                 )
 
                 profileNavGraph(

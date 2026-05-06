@@ -65,7 +65,7 @@ fun RowScope.TopBarActionRow(
                     is TextAction -> {
                         Text(
                             text = stringResource(action.titleRes).uppercase(),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.headlineSmall,
                             color = when {
                                 !action.isEnabled -> action.textDisabledColor
                                     ?: MaterialTheme.colorScheme.outlineVariant

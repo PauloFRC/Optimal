@@ -1,8 +1,8 @@
-package dev.optimal.tracker.database.model.workout.input
+package dev.optimal.tracker.model.workout.input
 
 import dev.optimal.tracker.model.workout.enums.SetType
 
-data class ModelSetInput(
+data class TemplateSetInput(
     val order: Int,
     val type: SetType
 )

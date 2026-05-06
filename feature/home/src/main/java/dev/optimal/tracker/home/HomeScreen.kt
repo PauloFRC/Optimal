@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.optimal.tracker.core.model.IconAction
+import dev.optimal.tracker.core.ui.components.NavigationIcon
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.core.ui.components.SearchTopAppBar
 import dev.optimal.tracker.core.utils.debounced
@@ -83,6 +84,7 @@ fun HomeScreenRoute(
         } else {
             OptimalTopAppBar(
                 title = stringResource(R.string.feature_home_title),
+                navigationIcon = NavigationIcon.None,
                 actions = listOf(
                     IconAction(
                         titleRes = CoreR.string.core_designsystem_search,

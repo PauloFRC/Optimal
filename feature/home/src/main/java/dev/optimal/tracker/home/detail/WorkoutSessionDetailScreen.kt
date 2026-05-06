@@ -90,9 +90,9 @@ fun WorkoutSessionDetailErrorScreen(
 ) {
     Scaffold(
         topBar = {
+            //TODO: change to be consistent with content
             OptimalTopAppBar(
                 title = stringResource(R.string.feature_home_session_detail_title),
-                showBackIcon = true,
                 onBackClick = {}
             )
         }

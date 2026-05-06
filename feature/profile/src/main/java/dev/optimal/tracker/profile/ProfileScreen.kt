@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.optimal.tracker.core.ui.components.NavigationIcon
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.feature.profile.R
 
@@ -23,7 +24,8 @@ fun ProfileScreenRoute(
     val uiState = viewModel.uiState.collectAsState()
     Column(modifier = Modifier.fillMaxSize()) {
         OptimalTopAppBar(
-            title = stringResource(R.string.feature_profile_title)
+            title = stringResource(R.string.feature_profile_title),
+            navigationIcon = NavigationIcon.None,
         )
 
         HomeScreen(

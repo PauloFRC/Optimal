@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.optimal.tracker.core.ui.components.AffirmativeButton
 import dev.optimal.tracker.core.ui.components.DarkButton
+import dev.optimal.tracker.core.ui.components.NavigationIcon
 import dev.optimal.tracker.core.ui.components.OptimalTopAppBar
 import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.workout.R
@@ -29,7 +30,7 @@ import dev.optimal.tracker.workout.components.WorkoutTemplateCard
 
 @Composable
 fun WorkoutScreenRoute(
-    onNavigateToSession: () -> Unit,
+    onNavigateToCreateTemplate: () -> Unit,
     onNavigateToDetail: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: WorkoutViewModel = hiltViewModel(),
@@ -38,12 +39,13 @@ fun WorkoutScreenRoute(
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         OptimalTopAppBar(
-            title = stringResource(R.string.feature_workout_title)
+            title = stringResource(R.string.feature_workout_title),
+            navigationIcon = NavigationIcon.None
         )
 
         WorkoutScreen(
             uiState = uiState.value,
-            onNavigateToSession = onNavigateToSession,
+            onNavigateToCreateTemplate = onNavigateToCreateTemplate,
             onNavigateToDetail = onNavigateToDetail,
             onNavigateBack = onNavigateBack
         )
@@ -53,7 +55,7 @@ fun WorkoutScreenRoute(
 @Composable
 fun WorkoutScreen(
     uiState: WorkoutState,
-    onNavigateToSession: () -> Unit,
+    onNavigateToCreateTemplate: () -> Unit,
     onNavigateToDetail: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
@@ -64,7 +66,7 @@ fun WorkoutScreen(
     ) {
         AffirmativeButton(
             text = stringResource(R.string.feature_workout_new_routine),
-            onClick = onNavigateToSession,
+            onClick = onNavigateToCreateTemplate,
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -155,7 +157,7 @@ fun WorkoutScreenPreview() {
                     )
                 )
             ),
-            onNavigateToSession = {},
+            onNavigateToCreateTemplate = {},
             onNavigateToDetail = {},
             onNavigateBack = {}
         )

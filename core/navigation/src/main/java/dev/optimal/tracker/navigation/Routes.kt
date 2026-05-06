@@ -18,4 +18,8 @@ sealed interface TopLevelRoute : AppRoute {
 sealed interface DetailRoute : AppRoute {
     @Serializable
     data class WorkoutSession(val sessionId: Long) : DetailRoute
+    @Serializable
+    data object WorkoutTemplateCreation : DetailRoute
+    @Serializable
+    data object ExerciseSelection : DetailRoute
 }

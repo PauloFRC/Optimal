@@ -4,4 +4,6 @@
     <string name="feature_workout_start_empty_workout">Create new routine</string>
     <string name="feature_workout_templates_title">Routine Templates</string>
     <string name="feature_workout_templates_last_executed">Last executed: %1$s</string>
+    <string name="feature_workout_templates_create_title">New template</string>
+    <string name="feature_workout_templates_create_add_exercise">Add exercise</string>
 </resources>

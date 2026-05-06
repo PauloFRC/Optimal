@@ -68,7 +68,6 @@ sealed interface OptimalTransition {
         }
     }
 
-    // TODO: comment better
     data object SharedElement : OptimalTransition {
         override val enter: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = { fadeIn(tween(NAV_ANIM_DURATION_MS)) }
         override val exit: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = { fadeOut(tween(NAV_ANIM_DURATION_MS)) }

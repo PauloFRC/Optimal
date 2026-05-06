@@ -10,8 +10,8 @@ import dev.optimal.tracker.database.model.workout.TemplateExerciseEntity
 import dev.optimal.tracker.database.model.workout.TemplateSetEntity
 import dev.optimal.tracker.database.model.workout.WorkoutTemplateEntity
 import dev.optimal.tracker.database.model.workout.WorkoutTemplateWithExercises
-import dev.optimal.tracker.database.model.workout.input.ModelExerciseInput
-import dev.optimal.tracker.database.model.workout.input.WorkoutModelInput
+import dev.optimal.tracker.model.workout.input.TemplateExerciseInput
+import dev.optimal.tracker.model.workout.input.WorkoutTemplateInput
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -42,14 +42,14 @@ interface WorkoutTemplateDao {
     suspend fun deleteTemplateExercisesByWorkoutId(workoutModelId: Long)
 
     @Transaction
-    suspend fun insertCompleteWorkoutTemplate(input: WorkoutModelInput): Long {
+    suspend fun insertCompleteWorkoutTemplate(input: WorkoutTemplateInput): Long {
         val workoutTemplateEntityId = insertWorkoutTemplate(WorkoutTemplateEntity(name = input.name))
         insertExercisesWithSets(workoutTemplateEntityId, input.exercises)
         return workoutTemplateEntityId
     }
 
     @Transaction
-    suspend fun updateCompleteWorkoutTemplate(workoutModelId: Long, input: WorkoutModelInput) {
+    suspend fun updateCompleteWorkoutTemplate(workoutModelId: Long, input: WorkoutTemplateInput) {
         updateWorkoutTemplate(WorkoutTemplateEntity(workoutTemplateId = workoutModelId, name = input.name))
         deleteTemplateExercisesByWorkoutId(workoutModelId)
         insertExercisesWithSets(workoutModelId, input.exercises)
@@ -63,7 +63,7 @@ interface WorkoutTemplateDao {
 
     private suspend fun insertExercisesWithSets(
         workoutModelId: Long,
-        exercises: List<ModelExerciseInput>
+        exercises: List<TemplateExerciseInput>
     ) {
         exercises.forEach { exerciseInput ->
             val templateExerciseEntityId = insertTemplateExercise(
