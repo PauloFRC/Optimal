@@ -1,9 +1,8 @@
 package dev.optimal.tracker.home.detail
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -55,13 +54,13 @@ import dev.optimal.tracker.model.workout.WorkoutSessionModel
 import dev.optimal.tracker.model.workout.enums.SetType
 import dev.optimal.tracker.model.workout.getFormattedDuration
 import dev.optimal.tracker.model.workout.getFormattedStartDate
+import dev.optimal.tracker.navigation.transition.LocalNavAnimatedVisibilityScope
+import dev.optimal.tracker.navigation.transition.optimalSharedBounds
 import java.time.LocalDateTime
 
 @Composable
 fun WorkoutSessionDetailScreenRoute(
     sessionId: Long,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onBackClick: () -> Unit,
     viewModel: WorkoutSessionDetailViewModel = hiltViewModel()
 ) {
@@ -78,8 +77,6 @@ fun WorkoutSessionDetailScreenRoute(
             WorkoutSessionDetailContentScreen(
                 sessionId = sessionId,
                 uiState = uiState,
-                sharedTransitionScope = sharedTransitionScope,
-                animatedVisibilityScope = animatedVisibilityScope,
                 onBackClick = onBackClick
             )
         }
@@ -110,128 +107,139 @@ fun WorkoutSessionDetailErrorScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun WorkoutSessionDetailContentScreen(
     sessionId: Long,
     uiState: WorkoutSessionDetailState,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onBackClick: () -> Unit
 ) {
     val isLoading = uiState is WorkoutSessionDetailState.Loading
     val session = (uiState as? WorkoutSessionDetailState.Success)?.session
     val exercises = session?.exercises
 
-    with(sharedTransitionScope) {
-        Box(
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+
+    Box(
+        modifier = Modifier
+            .optimalSharedBounds(
+                key = "session_bounds_$sessionId",
+                clipShape = RoundedCornerShape(16.dp)
+            )
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        Column(
             modifier = Modifier
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "session_bounds_$sessionId"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(16.dp)),
-                )
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-        ) {
-            with(animatedVisibilityScope) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .animateEnterExit(
-                            enter = fadeIn(animationSpec = tween(150)),
-                            exit = fadeOut(animationSpec = tween(150))
-                        )
-                        .systemBarsPadding()
-                ) {
-                    Column {
-                        LazyColumn(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            item {
-                                WorkoutSessionDetailTopBar(
-                                    title = session?.name,
-                                    isLoading = isLoading,
-                                    onBackClick = onBackClick,
-                                    onMoreClick = {}
-                                )
-                            }
-                            item {
-                                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                                    Row {
-                                        ShimmerText(
-                                            text = session?.getFormattedStartDate() ?: "",
-                                            isLoading = isLoading,
-                                            style = MaterialTheme.typography.headlineSmall,
-                                            shimmerWidth = 70.dp
-                                        )
-                                        Text(
-                                            " • ",
-                                            style = MaterialTheme.typography.headlineSmall.copy(color = Iron)
-                                        )
-                                        ShimmerText(
-                                            text = session?.getFormattedDuration() ?: "",
-                                            isLoading = isLoading,
-                                            style = MaterialTheme.typography.headlineSmall,
-                                            shimmerWidth = 70.dp
-                                        )
-                                    }
-                                    val numPRs = 10
-                                    if (!isLoading && numPRs > 0) {
-                                        Text(
-                                            text = "$numPRs PRS",
-                                            style = MaterialTheme.typography.headlineSmall,
-                                            color = MaterialTheme.colorScheme.inverseOnSurface,
-                                            modifier = Modifier
-                                                .padding(vertical = 8.dp)
-                                                .background(MaterialTheme.colorScheme.inverseSurface, RectangleShape)
-                                                .padding(horizontal = 8.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                }
-                            }
-                            exercises?.let {
-                                items(exercises) { exercise ->
-                                    if (exercise.sets.isNotEmpty()) {
-                                        // ✅ Each exercise item also gets its own horizontal padding
-                                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                                            SessionExerciseDetail(exercise, isLoading)
-                                        }
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                    }
-                                }
-                            }
+                .systemBarsPadding()
+                .let { baseModifier ->
+                    if (animatedVisibilityScope != null) {
+                        with(animatedVisibilityScope) {
+                            baseModifier.animateEnterExit(
+                                enter = fadeIn(animationSpec = tween(150)),
+                                exit = fadeOut(animationSpec = tween(150))
+                            )
                         }
-                        AffirmativeButton(
-                            text = stringResource(R.string.feature_home_session_detail_start_session),
-                            onClick = {},
-                            modifier = Modifier
-                                .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
-                                .fillMaxWidth()
-                                .animateEnterExit(
-                                    enter = fadeIn(
-                                        animationSpec = tween(
-                                            durationMillis = 600,
-                                            delayMillis = 300
-                                        )
-                                    ) + slideInVertically(
-                                        initialOffsetY = { it / 2 },
-                                        animationSpec = tween(
-                                            durationMillis = 600,
-                                            delayMillis = 300
-                                        )
-                                    ),
-                                    exit = fadeOut(
-                                        animationSpec = tween(durationMillis = 150)
-                                    ) + slideOutVertically(
-                                        targetOffsetY = { it / 2 },
-                                        animationSpec = tween(durationMillis = 150)
-                                    )
-                                )
-                        )
+                    } else {
+                        baseModifier
                     }
                 }
+        ) {
+            Column {
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    item {
+                        WorkoutSessionDetailTopBar(
+                            title = session?.name,
+                            isLoading = isLoading,
+                            onBackClick = onBackClick,
+                            onMoreClick = {}
+                        )
+                    }
+                    item {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            Row {
+                                ShimmerText(
+                                    text = session?.getFormattedStartDate() ?: "",
+                                    isLoading = isLoading,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    shimmerWidth = 70.dp
+                                )
+                                Text(
+                                    " • ",
+                                    style = MaterialTheme.typography.headlineSmall.copy(color = Iron)
+                                )
+                                ShimmerText(
+                                    text = session?.getFormattedDuration() ?: "",
+                                    isLoading = isLoading,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    shimmerWidth = 70.dp
+                                )
+                            }
+                            val numPRs = 10
+                            if (!isLoading && numPRs > 0) {
+                                Text(
+                                    text = "$numPRs PRS",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                                    modifier = Modifier
+                                        .padding(vertical = 8.dp)
+                                        .background(MaterialTheme.colorScheme.inverseSurface, RectangleShape)
+                                        .padding(horizontal = 8.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+                    exercises?.let {
+                        items(exercises) { exercise ->
+                            if (exercise.sets.isNotEmpty()) {
+                                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                    SessionExerciseDetail(exercise, isLoading)
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
+                }
+
+                AffirmativeButton(
+                    text = stringResource(R.string.feature_home_session_detail_start_session),
+                    onClick = {},
+                    modifier = Modifier
+                        .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
+                        .fillMaxWidth()
+                        .let { baseModifier ->
+                            if (animatedVisibilityScope != null) {
+                                with(animatedVisibilityScope) {
+                                    baseModifier.animateEnterExit(
+                                        enter = fadeIn(
+                                            animationSpec = tween(
+                                                durationMillis = 600,
+                                                delayMillis = 300
+                                            )
+                                        ) + slideInVertically(
+                                            initialOffsetY = { it / 2 },
+                                            animationSpec = tween(
+                                                durationMillis = 600,
+                                                delayMillis = 300
+                                            )
+                                        ),
+                                        exit = fadeOut(
+                                            animationSpec = tween(durationMillis = 150)
+                                        ) + slideOutVertically(
+                                            targetOffsetY = { it / 2 },
+                                            animationSpec = tween(durationMillis = 150)
+                                        )
+                                    )
+                                }
+                            } else {
+                                baseModifier
+                            }
+                        }
+                )
             }
         }
     }
@@ -372,8 +380,6 @@ fun WorkoutSessionDetailScreenPreview() {
                 WorkoutSessionDetailContentScreen(
                     sessionId = 1L,
                     uiState = WorkoutSessionDetailState.Success(session = session),
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this,
                     onBackClick = {}
                 )
             }
@@ -390,8 +396,6 @@ fun WorkoutSessionDetailScreenLoadingPreview() {
                 WorkoutSessionDetailContentScreen(
                     sessionId = 1L,
                     uiState = WorkoutSessionDetailState.Loading,
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this,
                     onBackClick = {}
                 )
             }
@@ -408,8 +412,6 @@ fun WorkoutSessionDetailScreenErrorPreview() {
                 WorkoutSessionDetailContentScreen(
                     sessionId = 1L,
                     uiState = WorkoutSessionDetailState.Error("Error"),
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this,
                     onBackClick = {}
                 )
             }

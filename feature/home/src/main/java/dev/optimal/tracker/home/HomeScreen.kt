@@ -2,9 +2,7 @@ package dev.optimal.tracker.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,13 +41,12 @@ import dev.optimal.tracker.designsystem.theme.OptimalTheme
 import dev.optimal.tracker.feature.home.R
 import dev.optimal.tracker.home.components.SessionHistoryCard
 import dev.optimal.tracker.model.workout.WorkoutSessionModel
+import dev.optimal.tracker.navigation.transition.optimalSharedBounds
 import dev.optimal.tracker.utils.OptimalDateTimeFormatter
 import dev.optimal.tracker.core.designsystem.R as CoreR
 
 @Composable
 fun HomeScreenRoute(
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onSessionClick: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -99,8 +96,6 @@ fun HomeScreenRoute(
         HomeScreen(
             sessions = filteredSessions,
             onSessionClick = onSessionClick,
-            sharedTransitionScope = sharedTransitionScope,
-            animatedVisibilityScope = animatedVisibilityScope,
             isSearchActive = isSearchActive,
             onClearSearchClick = {
                 searchQuery = ""
@@ -113,8 +108,6 @@ fun HomeScreenRoute(
 fun HomeScreen(
     sessions: List<WorkoutSessionModel>,
     onSessionClick: (Long) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     isSearchActive: Boolean = false,
     onClearSearchClick: () -> Unit = {}
 ) {
@@ -151,19 +144,13 @@ fun HomeScreen(
                 previousSession = sessions.getOrNull(index - 1),
                 sessions = sessions
             )
-            with(sharedTransitionScope) {
-                SessionHistoryCard(
-                    session = session,
-                    onClick = { onSessionClick(session.id) }.debounced(),
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(key = "session_bounds_${session.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                        )
-                )
-            }
+            SessionHistoryCard(
+                session = session,
+                onClick = { onSessionClick(session.id) }.debounced(),
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .optimalSharedBounds(key = "session_bounds_${session.id}")
+            )
         }
     }
 }
@@ -218,9 +205,7 @@ fun HomeScreenPreview() {
             AnimatedVisibility(visible = true) {
                 HomeScreen(
                     sessions = HomeState().sessionHistory,
-                    onSessionClick = {},
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this
+                    onSessionClick = {}
                 )
             }
         }
@@ -235,9 +220,7 @@ fun HomeScreenEmptyPreview() {
             AnimatedVisibility(visible = true) {
                 HomeScreen(
                     sessions = listOf(),
-                    onSessionClick = {},
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this
+                    onSessionClick = {}
                 )
             }
         }
